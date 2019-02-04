@@ -6,6 +6,6 @@ namespace SteamAccountDistributor.Service
 {
     public interface ISteamAccountService
     {
-        SteamAccountResponse GetAccount(string username, string password);
+        SteamAccountResponse GetAccount(SteamAccountRequest request);
     }
 }

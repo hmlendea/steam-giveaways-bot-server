@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -23,32 +25,70 @@ namespace SteamAccountDistributor.Service
             this.steamAccountRepository = steamAccountRepository;
         }
 
-        public SteamAccountResponse GetAccount(string hostname, string password)
+        public SteamAccountResponse GetAccount(SteamAccountRequest request)
         {
-            Assignment assignment = assignmentRepository.Get(hostname).ToServiceModel();
+            Assignment assignment = assignmentRepository.Get(request.Hostname).ToServiceModel();
+            ValidateRequest(request, assignment);
 
-            if (assignment.Password != password)
-            {
-                throw new AuthenticationException($"Incorrect password");
-            }
-
-            if (string.IsNullOrWhiteSpace(assignment.AssignedSteamAccount))
-            {
-                // TODO: Make sure that the new account is not already assigned to some other user
-                assignment.AssignedSteamAccount = steamAccountRepository.GetAll().GetRandomElement().Username;
-
-                assignmentRepository.Update(assignment.ToDataObject());
-            }
-
-            SteamAccount steamAccount = steamAccountRepository.Get(assignment.AssignedSteamAccount).ToServiceModel();
-
+            SteamAccount assignedAccount = GetAssignedAccount(assignment, request.AccountStatus);
             SteamAccountResponse response = new SteamAccountResponse
             {
-                Username = steamAccount.Username,
-                Password = steamAccount.Password
+                Username = assignedAccount.Username,
+                Password = assignedAccount.Password
             };
 
             return response;
+        }
+
+        void ValidateRequest(SteamAccountRequest request, Assignment assignment)
+        {
+            if (assignment.Password != request.Password)
+            {
+                throw new AuthenticationException($"Incorrect password");
+            }
+        }
+
+        SteamAccount GetAssignedAccount(Assignment assignment, AccountStatus accountStatus)
+        {
+            bool needsReassignment = DoesItNeedReassignment(assignment, accountStatus);
+            SteamAccount assignedAccount;
+
+            if (needsReassignment)
+            {
+                assignedAccount = FindAccountToAssign();
+
+                assignment.AssignedSteamAccount = assignedAccount.Username;
+                assignmentRepository.Update(assignment.ToDataObject());
+            }
+            else
+            {
+                assignedAccount = steamAccountRepository.Get(assignment.AssignedSteamAccount).ToServiceModel();
+            }
+
+            return assignedAccount;
+        }
+
+        SteamAccount FindAccountToAssign()
+        {
+            IEnumerable<Assignment> assignments = assignmentRepository.GetAll().ToServiceModels();
+            IEnumerable<SteamAccount> steamAccounts = steamAccountRepository.GetAll().ToServiceModels();
+
+            SteamAccount randomAccount = steamAccounts
+                .Where(x => assignments.All(y => y.AssignedSteamAccount != x.Username))
+                .GetRandomElement();
+
+            return randomAccount;
+        }
+
+        bool DoesItNeedReassignment(Assignment assignment, AccountStatus accountStatus)
+        {
+            if (string.IsNullOrWhiteSpace(assignment.AssignedSteamAccount) ||
+                accountStatus == AccountStatus.Suspended)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

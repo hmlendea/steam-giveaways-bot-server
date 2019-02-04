@@ -5,5 +5,7 @@ namespace SteamAccountDistributor.Api.Models
         public string Hostname { get; set; }
 
         public string Password { get; set; }
+
+        public AccountStatus AccountStatus { get; set; }
     }
 }

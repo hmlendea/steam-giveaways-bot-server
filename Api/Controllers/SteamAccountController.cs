@@ -29,11 +29,21 @@ namespace SteamAccountDistributor.Controllers
         }
 
         [HttpGet("{hostname}")]
-        public ActionResult<SteamAccountResponse> GetAccount(string hostname, [FromQuery] string password)
+        public ActionResult<SteamAccountResponse> GetAccount(
+            string hostname,
+            [FromQuery] string password,
+            [FromQuery] AccountStatus accountStatus)
         {
             try
             {
-                return service.GetAccount(hostname, password);
+                SteamAccountRequest request= new SteamAccountRequest
+                {
+                    Hostname = hostname,
+                    Password = password,
+                    AccountStatus = accountStatus
+                };
+
+                return service.GetAccount(request);
             }
             catch (Exception ex)
             {
