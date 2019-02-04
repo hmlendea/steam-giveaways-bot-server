@@ -9,5 +9,7 @@ namespace SteamAccountDistributor.DataAccess.Repositories
         IEnumerable<UserEntity> GetAll();
 
         UserEntity Get(string username);
+
+        void Update(UserEntity user);
     }
 }

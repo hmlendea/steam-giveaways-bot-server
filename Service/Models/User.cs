@@ -1,4 +1,4 @@
-namespace SteamAccountDistributor.Api.Models
+namespace SteamAccountDistributor.Service.Models
 {
     public sealed class User
     {

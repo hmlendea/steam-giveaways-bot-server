@@ -51,6 +51,23 @@ namespace SteamAccountDistributor.DataAccess.Repositories
             return user;
         }
 
+        public void Update(UserEntity user)
+        {
+            IEnumerable<UserEntity> users = GetAll();
+            UserEntity oldUser = users.FirstOrDefault(x => x.Username == user.Username);
+
+            if (oldUser == null)
+            {
+                throw new EntityNotFoundException(user.Username, nameof(UserEntity));
+            }
+
+            oldUser.Password = user.Password;
+            oldUser.AssignedSteamAccount = user.AssignedSteamAccount;
+
+            IEnumerable<string> csvLines = users.Select(x => $"{x.Username},{x.Password},{x.AssignedSteamAccount}");
+            File.WriteAllLines(configuration.UserStorePath, csvLines);
+        }
+
         public static UserEntity ReadUserEntity(string csvLine)
         {
             string[] fields = csvLine.Split(CsvSeparator);

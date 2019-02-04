@@ -1,6 +1,6 @@
 namespace SteamAccountDistributor.Api.Models
 {
-    public sealed class SteamAccount
+    public sealed class SteamAccountRequest
     {
         public string Username { get; set; }
 
