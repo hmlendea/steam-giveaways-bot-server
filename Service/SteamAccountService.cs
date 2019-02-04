@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 using SteamAccountDistributor.Api.Models;
@@ -22,9 +23,14 @@ namespace SteamAccountDistributor.Service
             this.steamAccountRepository = steamAccountRepository;
         }
 
-        public SteamAccountResponse GetAccount(string hostname)
+        public SteamAccountResponse GetAccount(string hostname, string password)
         {
             Assignment assignment = assignmentRepository.Get(hostname).ToServiceModel();
+
+            if (assignment.Password != password)
+            {
+                throw new AuthenticationException($"Incorrect password");
+            }
 
             if (string.IsNullOrWhiteSpace(assignment.AssignedSteamAccount))
             {
