@@ -28,7 +28,7 @@ namespace SteamAccountDistributor.Service.Mapping
             return dataObject;
         }
 
-        internal static IEnumerable<Assignment> ToApiModels(this IEnumerable<AssignmentEntity> dataObjects)
+        internal static IEnumerable<Assignment> ToServiceModels(this IEnumerable<AssignmentEntity> dataObjects)
         {
             IEnumerable<Assignment> serviceModels = dataObjects.Select(dataObject => dataObject.ToServiceModel());
 
