@@ -1,6 +1,6 @@
 namespace SteamAccountDistributor.Service.Models
 {
-    public sealed class User
+    public sealed class Assignment
     {
         public string Username { get; set; }
 

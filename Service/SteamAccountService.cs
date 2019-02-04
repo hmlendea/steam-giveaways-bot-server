@@ -10,31 +10,31 @@ namespace SteamAccountDistributor.Service
 {
     public sealed class SteamAccountService : ISteamAccountService
     {
-        readonly IUserRepository userRepository;
+        readonly IAssignmentRepository assignmentRepository;
 
         readonly ISteamAccountRepository steamAccountRepository;
 
         public SteamAccountService(
-            IUserRepository userRepository,
+            IAssignmentRepository assignmentRepository,
             ISteamAccountRepository steamAccountRepository)
         {
-            this.userRepository = userRepository;
+            this.assignmentRepository = assignmentRepository;
             this.steamAccountRepository = steamAccountRepository;
         }
 
-        public SteamAccountResponse GetAccount(string username)
+        public SteamAccountResponse GetAccount(string hostname)
         {
-            User user = userRepository.Get(username).ToServiceModel();
+            Assignment assignment = assignmentRepository.Get(hostname).ToServiceModel();
 
-            if (string.IsNullOrWhiteSpace(user.AssignedSteamAccount))
+            if (string.IsNullOrWhiteSpace(assignment.AssignedSteamAccount))
             {
                 // TODO: Make sure that the new account is not already assigned to some other user
-                user.AssignedSteamAccount = steamAccountRepository.GetAll().GetRandomElement().Username;
+                assignment.AssignedSteamAccount = steamAccountRepository.GetAll().GetRandomElement().Username;
 
-                userRepository.Update(user.ToDataObject());
+                assignmentRepository.Update(assignment.ToDataObject());
             }
 
-            SteamAccount steamAccount = steamAccountRepository.Get(user.AssignedSteamAccount).ToServiceModel();
+            SteamAccount steamAccount = steamAccountRepository.Get(assignment.AssignedSteamAccount).ToServiceModel();
 
             SteamAccountResponse response = new SteamAccountResponse
             {

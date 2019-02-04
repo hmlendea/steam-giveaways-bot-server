@@ -6,7 +6,7 @@ using SteamAccountDistributor.Service.Models;
 
 namespace SteamAccountDistributor.Service.Mapping
 {
-    static class SteamAccountMappingExtensions
+    static class SteamAccountMappings
     {
         internal static SteamAccount ToServiceModel(this SteamAccountEntity dataObject)
         {

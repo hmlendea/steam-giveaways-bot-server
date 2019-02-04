@@ -28,10 +28,10 @@ namespace SteamAccountDistributor.Controllers
             //this.logger = logger;
         }
 
-        [HttpGet("{username}")]
-        public ActionResult<SteamAccountResponse> GetAccount(string username)
+        [HttpGet("{hostname}")]
+        public ActionResult<SteamAccountResponse> GetAccount(string hostname)
         {
-            SteamAccountResponse response = service.GetAccount(username);
+            SteamAccountResponse response = service.GetAccount(hostname);
 
             return response;
         }

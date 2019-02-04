@@ -1,8 +1,8 @@
 namespace SteamAccountDistributor.DataAccess.DataObjects
 {
-    public sealed class UserEntity
+    public sealed class AssignmentEntity
     {
-        public string Username { get; set; }
+        public string Hostname { get; set; }
 
         public string Password { get; set; }
 
