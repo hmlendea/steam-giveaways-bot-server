@@ -6,6 +6,6 @@ namespace SteamAccountDistributor.Api.Models
 
         public string Password { get; set; }
 
-        public AccountStatus AccountStatus { get; set; }
+        public string GiveawaysProvider { get; set; }
     }
 }

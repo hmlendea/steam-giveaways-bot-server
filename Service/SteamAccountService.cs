@@ -30,7 +30,7 @@ namespace SteamAccountDistributor.Service
             User user = userRepository.Get(request.Username).ToServiceModel();
             ValidateRequest(request, user);
 
-            SteamAccount assignedAccount = GetAssignedAccount(user, request.AccountStatus);
+            SteamAccount assignedAccount = GetAssignedAccount(user);
             SteamAccountResponse response = new SteamAccountResponse
             {
                 Username = assignedAccount.Username,
@@ -48,9 +48,9 @@ namespace SteamAccountDistributor.Service
             }
         }
 
-        SteamAccount GetAssignedAccount(User user, AccountStatus accountStatus)
+        SteamAccount GetAssignedAccount(User user)
         {
-            bool needsReuser = DoesItNeedReuser(user, accountStatus);
+            bool needsReuser = DoesItNeedReuser(user);
             SteamAccount assignedAccount;
 
             if (needsReuser)
@@ -80,10 +80,9 @@ namespace SteamAccountDistributor.Service
             return randomAccount;
         }
 
-        bool DoesItNeedReuser(User user, AccountStatus accountStatus)
+        bool DoesItNeedReuser(User user)
         {
-            if (string.IsNullOrWhiteSpace(user.AssignedSteamAccount) ||
-                accountStatus == AccountStatus.Suspended)
+            if (string.IsNullOrWhiteSpace(user.AssignedSteamAccount))
             {
                 return true;
             }

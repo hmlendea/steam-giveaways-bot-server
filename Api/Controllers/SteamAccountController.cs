@@ -32,15 +32,15 @@ namespace SteamAccountDistributor.Controllers
         public ActionResult<SteamAccountResponse> GetAccount(
             string username,
             [FromQuery] string password,
-            [FromQuery] AccountStatus accountStatus)
+            [FromQuery] string gaProvider)
         {
             try
             {
-                SteamAccountRequest request= new SteamAccountRequest
+                SteamAccountRequest request = new SteamAccountRequest
                 {
                     Username = username,
                     Password = password,
-                    AccountStatus = accountStatus
+                    GiveawaysProvider = gaProvider
                 };
 
                 return service.GetAccount(request);
