@@ -28,9 +28,9 @@ namespace SteamAccountDistributor.Controllers
             //this.logger = logger;
         }
 
-        [HttpGet("{hostname}")]
+        [HttpGet("{username}")]
         public ActionResult<SteamAccountResponse> GetAccount(
-            string hostname,
+            string username,
             [FromQuery] string password,
             [FromQuery] AccountStatus accountStatus)
         {
@@ -38,7 +38,7 @@ namespace SteamAccountDistributor.Controllers
             {
                 SteamAccountRequest request= new SteamAccountRequest
                 {
-                    Hostname = hostname,
+                    Username = username,
                     Password = password,
                     AccountStatus = accountStatus
                 };

@@ -13,24 +13,24 @@ namespace SteamAccountDistributor.Service
 {
     public sealed class SteamAccountService : ISteamAccountService
     {
-        readonly IAssignmentRepository assignmentRepository;
+        readonly IUserRepository userRepository;
 
         readonly ISteamAccountRepository steamAccountRepository;
 
         public SteamAccountService(
-            IAssignmentRepository assignmentRepository,
+            IUserRepository userRepository,
             ISteamAccountRepository steamAccountRepository)
         {
-            this.assignmentRepository = assignmentRepository;
+            this.userRepository = userRepository;
             this.steamAccountRepository = steamAccountRepository;
         }
 
         public SteamAccountResponse GetAccount(SteamAccountRequest request)
         {
-            Assignment assignment = assignmentRepository.Get(request.Hostname).ToServiceModel();
-            ValidateRequest(request, assignment);
+            User user = userRepository.Get(request.Username).ToServiceModel();
+            ValidateRequest(request, user);
 
-            SteamAccount assignedAccount = GetAssignedAccount(assignment, request.AccountStatus);
+            SteamAccount assignedAccount = GetAssignedAccount(user, request.AccountStatus);
             SteamAccountResponse response = new SteamAccountResponse
             {
                 Username = assignedAccount.Username,
@@ -40,29 +40,29 @@ namespace SteamAccountDistributor.Service
             return response;
         }
 
-        void ValidateRequest(SteamAccountRequest request, Assignment assignment)
+        void ValidateRequest(SteamAccountRequest request, User user)
         {
-            if (assignment.Password != request.Password)
+            if (user.Password != request.Password)
             {
                 throw new AuthenticationException($"Incorrect password");
             }
         }
 
-        SteamAccount GetAssignedAccount(Assignment assignment, AccountStatus accountStatus)
+        SteamAccount GetAssignedAccount(User user, AccountStatus accountStatus)
         {
-            bool needsReassignment = DoesItNeedReassignment(assignment, accountStatus);
+            bool needsReuser = DoesItNeedReuser(user, accountStatus);
             SteamAccount assignedAccount;
 
-            if (needsReassignment)
+            if (needsReuser)
             {
                 assignedAccount = FindAccountToAssign();
 
-                assignment.AssignedSteamAccount = assignedAccount.Username;
-                assignmentRepository.Update(assignment.ToDataObject());
+                user.AssignedSteamAccount = assignedAccount.Username;
+                userRepository.Update(user.ToDataObject());
             }
             else
             {
-                assignedAccount = steamAccountRepository.Get(assignment.AssignedSteamAccount).ToServiceModel();
+                assignedAccount = steamAccountRepository.Get(user.AssignedSteamAccount).ToServiceModel();
             }
 
             return assignedAccount;
@@ -70,19 +70,19 @@ namespace SteamAccountDistributor.Service
 
         SteamAccount FindAccountToAssign()
         {
-            IEnumerable<Assignment> assignments = assignmentRepository.GetAll().ToServiceModels();
+            IEnumerable<User> users = userRepository.GetAll().ToServiceModels();
             IEnumerable<SteamAccount> steamAccounts = steamAccountRepository.GetAll().ToServiceModels();
 
             SteamAccount randomAccount = steamAccounts
-                .Where(x => assignments.All(y => y.AssignedSteamAccount != x.Username))
+                .Where(x => users.All(y => y.AssignedSteamAccount != x.Username))
                 .GetRandomElement();
 
             return randomAccount;
         }
 
-        bool DoesItNeedReassignment(Assignment assignment, AccountStatus accountStatus)
+        bool DoesItNeedReuser(User user, AccountStatus accountStatus)
         {
-            if (string.IsNullOrWhiteSpace(assignment.AssignedSteamAccount) ||
+            if (string.IsNullOrWhiteSpace(user.AssignedSteamAccount) ||
                 accountStatus == AccountStatus.Suspended)
             {
                 return true;

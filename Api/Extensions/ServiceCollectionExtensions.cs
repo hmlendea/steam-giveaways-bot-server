@@ -23,7 +23,7 @@ namespace SteamAccountDistributor.Api.Extensions
         {
             return services
                 .AddScoped<ISteamAccountService, SteamAccountService>()
-                .AddScoped<IAssignmentRepository, AssignmentRepository>()
+                .AddScoped<IUserRepository, UserRepository>()
                 .AddScoped<ISteamAccountRepository, SteamAccountRepository>();
         }
     }
