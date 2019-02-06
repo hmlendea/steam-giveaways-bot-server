@@ -17,8 +17,8 @@ namespace SteamAccountDistributor.Security
                 return false;
             }
 
-            string calculatedHmac = GenerateToken(obj, sharedSecretKey);
-            bool doesMatch = calculatedHmac.Equals(expectedToken);
+            string calculatedToken = GenerateToken(obj, sharedSecretKey);
+            bool doesMatch = calculatedToken.Equals(expectedToken);
 
             return doesMatch;
         }

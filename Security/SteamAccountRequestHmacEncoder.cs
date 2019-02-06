@@ -10,7 +10,9 @@ namespace SteamAccountDistributor.Security
                 obj.Username +
                 obj.GiveawaysProvider;
 
-            return ComputeHmacToken(stringForSigning, sharedSecretKey);
+            string hmacToken = ComputeHmacToken(stringForSigning, sharedSecretKey);
+
+            return hmacToken;
         }
     }
 }

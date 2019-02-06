@@ -38,6 +38,7 @@ namespace SteamAccountDistributor.Service
         public SteamAccountResponse GetAccount(SteamAccountRequest request)
         {
             User user = userRepository.Get(request.Username).ToServiceModel();
+
             ValidateRequest(request, user);
 
             SteamAccount assignedAccount = GetAssignedAccount(user, request.GiveawaysProvider);
@@ -90,7 +91,7 @@ namespace SteamAccountDistributor.Service
 
             steamAccounts = steamAccounts.Where(x => users.All(y => y.AssignedSteamAccount != x.Username));
 
-            if (gaProvider.Equals("STEAMGIFITS"))
+            if (gaProvider.Equals("SteamGifts", StringComparison.InvariantCultureIgnoreCase))
             {
                 steamAccounts = steamAccounts.Where(x => !x.IsSteamGiftsSuspended);
             }
@@ -109,7 +110,8 @@ namespace SteamAccountDistributor.Service
 
             SteamAccount account = steamAccountRepository.Get(user.AssignedSteamAccount).ToServiceModel();
 
-            if (gaProvider.Equals("STEAMGIFTS") && account.IsSteamGiftsSuspended)
+            if (gaProvider.Equals("SteamGifts", StringComparison.InvariantCultureIgnoreCase) &&
+                account.IsSteamGiftsSuspended)
             {
                 return true;
             }

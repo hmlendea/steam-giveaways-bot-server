@@ -39,7 +39,7 @@ namespace SteamAccountDistributor.Controllers
                 SteamAccountRequest request = new SteamAccountRequest
                 {
                     Username = username,
-                    GiveawaysProvider = gaProvider.ToUpper(),
+                    GiveawaysProvider = gaProvider,
                     HmacToken = hmac
                 };
 
