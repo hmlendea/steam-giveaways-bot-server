@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
@@ -30,7 +31,7 @@ namespace SteamAccountDistributor.Service
             User user = userRepository.Get(request.Username).ToServiceModel();
             ValidateRequest(request, user);
 
-            SteamAccount assignedAccount = GetAssignedAccount(user);
+            SteamAccount assignedAccount = GetAssignedAccount(user, request.GiveawaysProvider);
             SteamAccountResponse response = new SteamAccountResponse
             {
                 Username = assignedAccount.Username,
@@ -48,14 +49,14 @@ namespace SteamAccountDistributor.Service
             }
         }
 
-        SteamAccount GetAssignedAccount(User user)
+        SteamAccount GetAssignedAccount(User user, string gaProvider)
         {
-            bool needsReuser = DoesItNeedReuser(user);
+            bool needsReuser = DoesItNeedReuser(user, gaProvider);
             SteamAccount assignedAccount;
 
             if (needsReuser)
             {
-                assignedAccount = FindAccountToAssign();
+                assignedAccount = FindAccountToAssign(gaProvider);
 
                 user.AssignedSteamAccount = assignedAccount.Username;
                 userRepository.Update(user.ToDataObject());
@@ -68,21 +69,33 @@ namespace SteamAccountDistributor.Service
             return assignedAccount;
         }
 
-        SteamAccount FindAccountToAssign()
+        SteamAccount FindAccountToAssign(string gaProvider)
         {
             IEnumerable<User> users = userRepository.GetAll().ToServiceModels();
             IEnumerable<SteamAccount> steamAccounts = steamAccountRepository.GetAll().ToServiceModels();
 
-            SteamAccount randomAccount = steamAccounts
-                .Where(x => users.All(y => y.AssignedSteamAccount != x.Username))
-                .GetRandomElement();
+            steamAccounts = steamAccounts.Where(x => users.All(y => y.AssignedSteamAccount != x.Username));
+
+            if (gaProvider.Equals("STEAMGIFITS"))
+            {
+                steamAccounts = steamAccounts.Where(x => !x.IsSteamGiftsSuspended);
+            }
+
+            SteamAccount randomAccount = steamAccounts.GetRandomElement();
 
             return randomAccount;
         }
 
-        bool DoesItNeedReuser(User user)
+        bool DoesItNeedReuser(User user, string gaProvider)
         {
             if (string.IsNullOrWhiteSpace(user.AssignedSteamAccount))
+            {
+                return true;
+            }
+
+            SteamAccount account = steamAccountRepository.Get(user.AssignedSteamAccount).ToServiceModel();
+
+            if (gaProvider.Equals("STEAMGIFTS") && account.IsSteamGiftsSuspended)
             {
                 return true;
             }

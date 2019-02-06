@@ -13,6 +13,7 @@ namespace SteamAccountDistributor.Service.Mapping
             SteamAccount serviceModel = new SteamAccount();
             serviceModel.Username = dataObject.Username;
             serviceModel.Password = dataObject.Password;
+            serviceModel.IsSteamGiftsSuspended = dataObject.IsSteamGiftsSuspended;
 
             return serviceModel;
         }
@@ -22,6 +23,7 @@ namespace SteamAccountDistributor.Service.Mapping
             SteamAccountEntity dataObject = new SteamAccountEntity();
             dataObject.Username = serviceModel.Username;
             dataObject.Password = serviceModel.Password;
+            dataObject.IsSteamGiftsSuspended = serviceModel.IsSteamGiftsSuspended;
 
             return dataObject;
         }

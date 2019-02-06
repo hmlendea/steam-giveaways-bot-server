@@ -58,6 +58,7 @@ namespace SteamAccountDistributor.DataAccess.Repositories
             SteamAccountEntity steamAccount = new SteamAccountEntity();
             steamAccount.Username = fields[0];
             steamAccount.Password = fields[1];
+            steamAccount.IsSteamGiftsSuspended = bool.Parse(fields[2]);
 
             return steamAccount;
         }

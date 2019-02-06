@@ -40,7 +40,7 @@ namespace SteamAccountDistributor.Controllers
                 {
                     Username = username,
                     Password = password,
-                    GiveawaysProvider = gaProvider
+                    GiveawaysProvider = gaProvider.ToUpper()
                 };
 
                 return service.GetAccount(request);
