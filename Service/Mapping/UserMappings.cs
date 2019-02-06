@@ -12,7 +12,7 @@ namespace SteamAccountDistributor.Service.Mapping
         {
             User serviceModel = new User();
             serviceModel.Username = dataObject.Username;
-            serviceModel.Password = dataObject.Password;
+            serviceModel.SharedSecretKey = dataObject.SharedSecretKey;
             serviceModel.AssignedSteamAccount = dataObject.AssignedSteamAccount;
 
             return serviceModel;
@@ -22,7 +22,7 @@ namespace SteamAccountDistributor.Service.Mapping
         {
             UserEntity dataObject = new UserEntity();
             dataObject.Username = serviceModel.Username;
-            dataObject.Password = serviceModel.Password;
+            dataObject.SharedSecretKey = serviceModel.SharedSecretKey;
             dataObject.AssignedSteamAccount = serviceModel.AssignedSteamAccount;
 
             return dataObject;

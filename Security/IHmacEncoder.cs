@@ -1,9 +1,9 @@
 namespace SteamAccountDistributor.Security
 {
-    public interface IHmacEncoder
+    public interface IHmacEncoder<T> where T : class
     {
-        string GenerateToken<T>(T obj, string sharedSecretKey) where T : class;
+        string GenerateToken(T obj, string sharedSecretKey);
 
-        bool IsTokenValid<T>(string expectedToken, T obj, string sharedSecretKey) where T : class;
+        bool IsTokenValid(string expectedToken, T obj, string sharedSecretKey);
     }
 }

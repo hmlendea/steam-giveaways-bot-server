@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SteamAccountDistributor.Api.Models;
 using SteamAccountDistributor.Core.Extensions;
 using SteamAccountDistributor.DataAccess.Repositories;
+using SteamAccountDistributor.Security;
 using SteamAccountDistributor.Service.Mapping;
 using SteamAccountDistributor.Service.Models;
 
@@ -18,12 +19,20 @@ namespace SteamAccountDistributor.Service
 
         readonly ISteamAccountRepository steamAccountRepository;
 
+        readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder;
+
+        readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder;
+
         public SteamAccountService(
             IUserRepository userRepository,
-            ISteamAccountRepository steamAccountRepository)
+            ISteamAccountRepository steamAccountRepository,
+            IHmacEncoder<SteamAccountRequest> requestHmacEncoder,
+            IHmacEncoder<SteamAccountResponse> responseHmacEncoder)
         {
             this.userRepository = userRepository;
             this.steamAccountRepository = steamAccountRepository;
+            this.requestHmacEncoder = requestHmacEncoder;
+            this.responseHmacEncoder = responseHmacEncoder;
         }
 
         public SteamAccountResponse GetAccount(SteamAccountRequest request)
@@ -32,20 +41,25 @@ namespace SteamAccountDistributor.Service
             ValidateRequest(request, user);
 
             SteamAccount assignedAccount = GetAssignedAccount(user, request.GiveawaysProvider);
+
             SteamAccountResponse response = new SteamAccountResponse
             {
                 Username = assignedAccount.Username,
                 Password = assignedAccount.Password
             };
 
+            response.HmacToken = responseHmacEncoder.GenerateToken(response, user.SharedSecretKey);
+
             return response;
         }
 
         void ValidateRequest(SteamAccountRequest request, User user)
         {
-            if (user.Password != request.Password)
+            bool isTokenValid = requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
+
+            if (!isTokenValid)
             {
-                throw new AuthenticationException($"Incorrect password");
+                throw new AuthenticationException("The provided HMAC token is not valid");
             }
         }
 

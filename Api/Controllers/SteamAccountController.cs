@@ -31,16 +31,16 @@ namespace SteamAccountDistributor.Controllers
         [HttpGet("{username}")]
         public ActionResult<SteamAccountResponse> GetAccount(
             string username,
-            [FromQuery] string password,
-            [FromQuery] string gaProvider)
+            [FromQuery] string gaProvider,
+            [FromQuery] string hmac)
         {
             try
             {
                 SteamAccountRequest request = new SteamAccountRequest
                 {
                     Username = username,
-                    Password = password,
-                    GiveawaysProvider = gaProvider.ToUpper()
+                    GiveawaysProvider = gaProvider.ToUpper(),
+                    HmacToken = hmac
                 };
 
                 return service.GetAccount(request);

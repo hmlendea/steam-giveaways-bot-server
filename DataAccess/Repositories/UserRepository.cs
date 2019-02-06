@@ -61,10 +61,10 @@ namespace SteamAccountDistributor.DataAccess.Repositories
                 throw new EntityNotFoundException(user.Username, nameof(UserEntity));
             }
 
-            oldUser.Password = user.Password;
+            oldUser.SharedSecretKey = user.SharedSecretKey;
             oldUser.AssignedSteamAccount = user.AssignedSteamAccount;
 
-            IEnumerable<string> csvLines = users.Select(x => $"{x.Username},{x.Password},{x.AssignedSteamAccount}");
+            IEnumerable<string> csvLines = users.Select(x => $"{x.Username},{x.SharedSecretKey},{x.AssignedSteamAccount}");
             File.WriteAllLines(configuration.UserStorePath, csvLines);
         }
 
@@ -74,7 +74,7 @@ namespace SteamAccountDistributor.DataAccess.Repositories
 
             UserEntity user = new UserEntity();
             user.Username = fields[0];
-            user.Password = fields[1];
+            user.SharedSecretKey = fields[1];
             user.AssignedSteamAccount = fields[2];
 
             return user;
