@@ -12,16 +12,16 @@ namespace SteamGiveawaysBot.Server.DataAccess.Repositories
     {
         const char CsvSeparator = ',';
 
-        readonly ApplicationConfiguration configuration;
+        readonly ApplicationSettings settings;
 
-        public SteamAccountRepository(ApplicationConfiguration configuration)
+        public SteamAccountRepository(ApplicationSettings settings)
         {
-            this.configuration = configuration;
+            this.settings = settings;
         }
 
         public IEnumerable<SteamAccountEntity> GetAll()
         {
-            IEnumerable<string> lines = File.ReadAllLines(configuration.SteamAccountStorePath);
+            IEnumerable<string> lines = File.ReadAllLines(settings.SteamAccountStorePath);
             IList<SteamAccountEntity> steamAccounts = new List<SteamAccountEntity>();
 
             foreach (string line in lines)

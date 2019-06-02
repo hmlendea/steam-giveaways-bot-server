@@ -14,9 +14,9 @@ namespace SteamGiveawaysBot.Server.Api.Extensions
     {
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            ApplicationConfiguration config = new ApplicationConfiguration();
-            configuration.Bind(nameof(ApplicationConfiguration), config);
-            services.AddSingleton(config);
+            ApplicationSettings settings = new ApplicationSettings();
+            configuration.Bind(nameof(ApplicationSettings), settings);
+            services.AddSingleton(settings);
 
             return services;
         }
@@ -26,9 +26,12 @@ namespace SteamGiveawaysBot.Server.Api.Extensions
             return services
                 .AddScoped<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
                 .AddScoped<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
+                .AddScoped<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
                 .AddScoped<ISteamAccountService, SteamAccountService>()
+                .AddScoped<IRewardService, RewardService>()
                 .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<ISteamAccountRepository, SteamAccountRepository>();
+                .AddScoped<ISteamAccountRepository, SteamAccountRepository>()
+                .AddScoped<IRewardRepository, RewardRepository>();
         }
     }
 }
