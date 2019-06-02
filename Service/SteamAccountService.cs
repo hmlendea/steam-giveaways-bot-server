@@ -4,14 +4,14 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
-using SteamAccountDistributor.Api.Models;
-using SteamAccountDistributor.Core.Extensions;
-using SteamAccountDistributor.DataAccess.Repositories;
-using SteamAccountDistributor.Security;
-using SteamAccountDistributor.Service.Mapping;
-using SteamAccountDistributor.Service.Models;
+using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Core.Extensions;
+using SteamGiveawaysBot.Server.DataAccess.Repositories;
+using SteamGiveawaysBot.Server.Security;
+using SteamGiveawaysBot.Server.Service.Mapping;
+using SteamGiveawaysBot.Server.Service.Models;
 
-namespace SteamAccountDistributor.Service
+namespace SteamGiveawaysBot.Server.Service
 {
     public sealed class SteamAccountService : ISteamAccountService
     {

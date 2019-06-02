@@ -2,9 +2,9 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-using SteamAccountDistributor.Api.Models;
+using SteamGiveawaysBot.Server.Api.Models;
 
-namespace SteamAccountDistributor.Security
+namespace SteamGiveawaysBot.Server.Security
 {
     public abstract class HmacEncoder<T> : IHmacEncoder<T> where T : class
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SteamAccountDistributor.Core.Extensions
+namespace SteamGiveawaysBot.Server.Core.Extensions
 {
     /// <summary>
     /// Enumerable extensions.

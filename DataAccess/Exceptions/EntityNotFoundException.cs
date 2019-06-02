@@ -1,6 +1,6 @@
 using System;
 
-namespace SteamAccountDistributor.DataAccess.Exceptions
+namespace SteamGiveawaysBot.Server.DataAccess.Exceptions
 {
     /// <summary>
     /// Entity not found exception.

@@ -1,6 +1,6 @@
-namespace SteamAccountDistributor.Core.Configuration
+namespace SteamGiveawaysBot.Server.Core.Configuration
 {
-    public sealed class SteamAccountDistributorConfiguration
+    public sealed class ApplicationConfiguration
     {
         public string UserStorePath { get; set; }
         

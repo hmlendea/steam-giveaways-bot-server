@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/SteamAccountDistributor.csproj"
+                "${workspaceFolder}/SteamGiveawaysBot.Server.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

@@ -2,19 +2,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using SteamAccountDistributor.Core.Configuration;
-using SteamAccountDistributor.DataAccess.Exceptions;
-using SteamAccountDistributor.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.Core.Configuration;
+using SteamGiveawaysBot.Server.DataAccess.Exceptions;
+using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
-namespace SteamAccountDistributor.DataAccess.Repositories
+namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
     public sealed class SteamAccountRepository : ISteamAccountRepository
     {
         const char CsvSeparator = ',';
 
-        readonly SteamAccountDistributorConfiguration configuration;
+        readonly ApplicationConfiguration configuration;
 
-        public SteamAccountRepository(SteamAccountDistributorConfiguration configuration)
+        public SteamAccountRepository(ApplicationConfiguration configuration)
         {
             this.configuration = configuration;
         }

@@ -1,21 +1,21 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using SteamAccountDistributor.Api.Models;
-using SteamAccountDistributor.Core.Configuration;
-using SteamAccountDistributor.DataAccess.DataObjects;
-using SteamAccountDistributor.DataAccess.Repositories;
-using SteamAccountDistributor.Security;
-using SteamAccountDistributor.Service;
+using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Core.Configuration;
+using SteamGiveawaysBot.Server.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.DataAccess.Repositories;
+using SteamGiveawaysBot.Server.Security;
+using SteamGiveawaysBot.Server.Service;
 
-namespace SteamAccountDistributor.Api.Extensions
+namespace SteamGiveawaysBot.Server.Api.Extensions
 {
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            SteamAccountDistributorConfiguration config = new SteamAccountDistributorConfiguration();
-            configuration.Bind(nameof(SteamAccountDistributorConfiguration), config);
+            ApplicationConfiguration config = new ApplicationConfiguration();
+            configuration.Bind(nameof(ApplicationConfiguration), config);
             services.AddSingleton(config);
 
             return services;
