@@ -14,9 +14,14 @@ namespace SteamGiveawaysBot.Server.Api.Extensions
     {
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            ApplicationSettings settings = new ApplicationSettings();
-            configuration.Bind(nameof(ApplicationSettings), settings);
-            services.AddSingleton(settings);
+            ApplicationSettings applicationSettings = new ApplicationSettings();
+            MailSettings mailSettings = new MailSettings();
+
+            configuration.Bind(nameof(ApplicationSettings), applicationSettings);
+            configuration.Bind(nameof(mailSettings), mailSettings);
+
+            services.AddSingleton(applicationSettings);
+            services.AddSingleton(mailSettings);
 
             return services;
         }
