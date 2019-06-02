@@ -20,6 +20,14 @@ namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 
         public IEnumerable<RewardEntity> GetAll()
         {
+            if (!File.Exists(settings.RewardsStorePath))
+            {
+                IEnumerable<RewardEntity> entities = new List<RewardEntity>();
+                SaveAll(entities);
+
+                return entities;
+            }
+
             XmlSerializer serializer = new XmlSerializer(typeof(List<RewardEntity>));
 
             using (TextReader reader = new StreamReader(settings.RewardsStorePath))
