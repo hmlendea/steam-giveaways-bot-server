@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 
-using SteamAccountDistributor.Api.Models;
+using SteamGiveawaysBot.Server.Api.Models;
 
-namespace SteamAccountDistributor.Service
+namespace SteamGiveawaysBot.Server.Service
 {
     public interface ISteamAccountService
     {

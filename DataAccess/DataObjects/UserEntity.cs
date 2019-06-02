@@ -1,4 +1,4 @@
-namespace SteamAccountDistributor.DataAccess.DataObjects
+namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
 {
     public sealed class UserEntity
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-using SteamAccountDistributor.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
-namespace SteamAccountDistributor.DataAccess.Repositories
+namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
     public interface IUserRepository
     {

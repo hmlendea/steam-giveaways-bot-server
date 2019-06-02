@@ -13,9 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 //using NuciLog.AspNetCore;
 
-using SteamAccountDistributor.Api.Extensions;
+using SteamGiveawaysBot.Server.Api.Extensions;
 
-namespace SteamAccountDistributor
+namespace SteamGiveawaysBot.Server
 {
     public class Startup
     {

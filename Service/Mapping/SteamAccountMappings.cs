@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using SteamAccountDistributor.DataAccess.DataObjects;
-using SteamAccountDistributor.Service.Models;
+using SteamGiveawaysBot.Server.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.Service.Models;
 
-namespace SteamAccountDistributor.Service.Mapping
+namespace SteamGiveawaysBot.Server.Service.Mapping
 {
     static class SteamAccountMappings
     {

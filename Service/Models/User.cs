@@ -1,4 +1,4 @@
-namespace SteamAccountDistributor.Service.Models
+namespace SteamGiveawaysBot.Server.Service.Models
 {
     public sealed class User
     {

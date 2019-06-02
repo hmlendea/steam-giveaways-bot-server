@@ -1,5 +1,7 @@
-[![Build Status](https://travis-ci.com/hmlendea/steam-account-distributor.svg?branch=master)](https://travis-ci.com/hmlendea/steam-account-distributor)
+[![Build Status](https://travis-ci.com/hmlendea/steam-giveaways-bot-server.svg?branch=master)](https://travis-ci.com/hmlendea/steam-giveaways-bot-server)
 
-# Steam Account Distributor
+# SteamGiveawaysBot Server
 
-REST API for distributing Steam account crendential on a per-user basis.
+REST API server for managing and providing data for SteamGiveawaysBot instances.
+
+The steam-giveaways-bot repository is not, and will not be made public.

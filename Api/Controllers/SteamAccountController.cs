@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
-using SteamAccountDistributor.Api.Models;
-using SteamAccountDistributor.Core.Extensions;
-using SteamAccountDistributor.Service;
+using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Core.Extensions;
+using SteamGiveawaysBot.Server.Service;
 
 //using NuciLog.Core;
 
-namespace SteamAccountDistributor.Controllers
+namespace SteamGiveawaysBot.Server.Controllers
 {
     [Route("[controller]")]
     [ApiController]

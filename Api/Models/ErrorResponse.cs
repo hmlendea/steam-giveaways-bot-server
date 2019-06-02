@@ -1,6 +1,6 @@
 using System;
 
-namespace SteamAccountDistributor.Api.Models
+namespace SteamGiveawaysBot.Server.Api.Models
 {
     public sealed class ErrorResponse : ResponseBase
     {

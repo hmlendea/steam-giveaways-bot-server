@@ -1,4 +1,4 @@
-namespace SteamAccountDistributor.Api.Models
+namespace SteamGiveawaysBot.Server.Api.Models
 {
     public sealed class SteamAccountResponse : SuccessResponse
     {
