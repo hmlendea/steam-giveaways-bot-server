@@ -12,16 +12,16 @@ namespace SteamGiveawaysBot.Server.DataAccess.Repositories
     {
         const char CsvSeparator = ',';
 
-        readonly ApplicationConfiguration configuration;
+        readonly ApplicationSettings settings;
 
-        public UserRepository(ApplicationConfiguration configuration)
+        public UserRepository(ApplicationSettings settings)
         {
-            this.configuration = configuration;
+            this.settings = settings;
         }
 
         public IEnumerable<UserEntity> GetAll()
         {
-            IEnumerable<string> lines = File.ReadAllLines(configuration.UserStorePath);
+            IEnumerable<string> lines = File.ReadAllLines(settings.UserStorePath);
             IList<UserEntity> users = new List<UserEntity>();
 
             foreach (string line in lines)
@@ -65,7 +65,7 @@ namespace SteamGiveawaysBot.Server.DataAccess.Repositories
             oldUser.AssignedSteamAccount = user.AssignedSteamAccount;
 
             IEnumerable<string> csvLines = users.Select(x => $"{x.Username},{x.SharedSecretKey},{x.AssignedSteamAccount}");
-            File.WriteAllLines(configuration.UserStorePath, csvLines);
+            File.WriteAllLines(settings.UserStorePath, csvLines);
         }
 
         public static UserEntity ReadUserEntity(string csvLine)
