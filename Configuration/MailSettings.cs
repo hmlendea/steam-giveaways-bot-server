@@ -1,4 +1,4 @@
-namespace SteamGiveawaysBot.Server.Core.Configuration
+namespace SteamGiveawaysBot.Server.Configuration
 {
     public sealed class MailSettings
     {
