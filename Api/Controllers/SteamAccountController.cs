@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Service;
 
-//using NuciLog.Core;
-
 namespace SteamGiveawaysBot.Server.Controllers
 {
     [Route("[controller]")]
@@ -17,14 +15,10 @@ namespace SteamGiveawaysBot.Server.Controllers
     public class SteamAccountController : ControllerBase
     {
         readonly ISteamAccountService service;
-        //readonly INuciLogger logger;
 
-        public SteamAccountController(
-            ISteamAccountService service)//,
-            //INuciLogger logger)
+        public SteamAccountController(ISteamAccountService service)
         {
             this.service = service;
-            //this.logger = logger;
         }
 
         [HttpGet("{username}")]
