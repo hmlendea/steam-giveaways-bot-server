@@ -1,6 +1,6 @@
 namespace SteamGiveawaysBot.Server.Configuration
 {
-    public sealed class DatStoreSettings
+    public sealed class DataStoreSettings
     {
         public string UserStorePath { get; set; }
         

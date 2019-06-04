@@ -10,7 +10,7 @@ namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
     public sealed class UserRepository : XmlRepository<UserEntity>, IUserRepository
     {
-        public UserRepository(ApplicationSettings settings)
+        public UserRepository(DataStoreSettings settings)
             : base(settings.UserStorePath)
         {
         }

@@ -9,7 +9,7 @@ namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
     public sealed class SteamAccountRepository : XmlRepository<SteamAccountEntity>, ISteamAccountRepository
     {
-        public SteamAccountRepository(ApplicationSettings settings)
+        public SteamAccountRepository(DataStoreSettings settings)
             : base(settings.SteamAccountStorePath)
         {
         }

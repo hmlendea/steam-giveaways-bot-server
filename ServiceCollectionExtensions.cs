@@ -8,16 +8,16 @@ using SteamGiveawaysBot.Server.DataAccess.Repositories;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service;
 
-namespace SteamGiveawaysBot.Server.Api.Extensions
+namespace SteamGiveawaysBot.Server
 {
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            DatStoreSettings dataStoreSettings = new DatStoreSettings();
+            DataStoreSettings dataStoreSettings = new DataStoreSettings();
             MailSettings mailSettings = new MailSettings();
 
-            configuration.Bind(nameof(DatStoreSettings), dataStoreSettings);
+            configuration.Bind(nameof(DataStoreSettings), dataStoreSettings);
             configuration.Bind(nameof(MailSettings), mailSettings);
 
             services.AddSingleton(dataStoreSettings);
