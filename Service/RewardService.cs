@@ -44,9 +44,10 @@ namespace SteamGiveawaysBot.Server.Service
         {
             User user = userRepository.Get(request.Username).ToServiceModel();
 
-            //ValidateRequest(request, user);
+            ValidateRequest(request, user);
 
             Reward reward = new Reward();
+            reward.Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{reward.SteamUsername}";
             reward.GiveawaysProvider = request.GiveawaysProvider;
             reward.GiveawayId = request.GiveawayId;
             reward.SteamUsername = request.SteamUsername;

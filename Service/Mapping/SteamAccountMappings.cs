@@ -11,6 +11,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
         internal static SteamAccount ToServiceModel(this SteamAccountEntity dataObject)
         {
             SteamAccount serviceModel = new SteamAccount();
+            serviceModel.Id = dataObject.Id;
             serviceModel.Username = dataObject.Username;
             serviceModel.Password = dataObject.Password;
             serviceModel.IsSteamGiftsSuspended = dataObject.IsSteamGiftsSuspended;
@@ -21,6 +22,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
         internal static SteamAccountEntity ToDataObject(this SteamAccount serviceModel)
         {
             SteamAccountEntity dataObject = new SteamAccountEntity();
+            dataObject.Id = serviceModel.Id;
             dataObject.Username = serviceModel.Username;
             dataObject.Password = serviceModel.Password;
             dataObject.IsSteamGiftsSuspended = serviceModel.IsSteamGiftsSuspended;

@@ -4,6 +4,8 @@ namespace SteamGiveawaysBot.Server.Service.Models
 {
     public sealed class Reward
     {
+        public string Id { get; set; }
+        
         public string GiveawaysProvider { get; set; }
 
         public string GiveawayId { get; set; }

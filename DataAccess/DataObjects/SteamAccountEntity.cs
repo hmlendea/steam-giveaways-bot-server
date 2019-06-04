@@ -1,6 +1,8 @@
+using NuciDAL.DataObjects;
+
 namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
 {
-    public sealed class SteamAccountEntity
+    public sealed class SteamAccountEntity : EntityBase
     {
         public string Username { get; set; }
 
