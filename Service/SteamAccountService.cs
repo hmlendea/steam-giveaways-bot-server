@@ -4,8 +4,9 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
+using NuciExtensions;
+
 using SteamGiveawaysBot.Server.Api.Models;
-using SteamGiveawaysBot.Server.Core.Extensions;
 using SteamGiveawaysBot.Server.DataAccess.Repositories;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service.Mapping;

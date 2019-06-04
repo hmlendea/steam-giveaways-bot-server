@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using SteamGiveawaysBot.Server.Api.Models;
-using SteamGiveawaysBot.Server.Core.Extensions;
 using SteamGiveawaysBot.Server.Service;
-
-//using NuciLog.Core;
 
 namespace SteamGiveawaysBot.Server.Controllers
 {
