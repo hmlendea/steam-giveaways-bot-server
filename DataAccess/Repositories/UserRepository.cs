@@ -1,83 +1,36 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System;
+
+using NuciDAL.IO;
+using NuciDAL.Repositories;
 
 using SteamGiveawaysBot.Server.Core.Configuration;
-using SteamGiveawaysBot.Server.DataAccess.Exceptions;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
 namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
-    public sealed class UserRepository : IUserRepository
+    public sealed class UserRepository : XmlRepository<UserEntity>, IUserRepository
     {
-        const char CsvSeparator = ',';
-
-        readonly ApplicationSettings settings;
-
         public UserRepository(ApplicationSettings settings)
+            : base(settings.UserStorePath)
         {
-            this.settings = settings;
         }
 
-        public IEnumerable<UserEntity> GetAll()
+        public override void Update(UserEntity user)
         {
-            IEnumerable<string> lines = File.ReadAllLines(settings.UserStorePath);
-            IList<UserEntity> users = new List<UserEntity>();
+            LoadEntitiesIfNeeded();
 
-            foreach (string line in lines)
+            UserEntity userEntityToUpdate = Get(user.Id);
+
+            if (userEntityToUpdate == null)
             {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    continue;
-                }
-    
-                UserEntity user = ReadUserEntity(line);
-                users.Add(user);
+                throw new EntityNotFoundException(user.Id, nameof(UserEntity));
             }
 
-            return users;
-        }    
-
-        public UserEntity Get(string username)
-        {
-            IEnumerable<UserEntity> users = GetAll();
-            UserEntity user = users.FirstOrDefault(x => x.Username == username);
-
-            if (user == null)
-            {
-                throw new EntityNotFoundException(username, nameof(UserEntity));
-            }
-
-            return user;
-        }
-
-        public void Update(UserEntity user)
-        {
-            IEnumerable<UserEntity> users = GetAll();
-            UserEntity oldUser = users.FirstOrDefault(x => x.Username == user.Username);
-
-            if (oldUser == null)
-            {
-                throw new EntityNotFoundException(user.Username, nameof(UserEntity));
-            }
-
-            oldUser.SharedSecretKey = user.SharedSecretKey;
-            oldUser.AssignedSteamAccount = user.AssignedSteamAccount;
-
-            IEnumerable<string> csvLines = users.Select(x => $"{x.Username},{x.SharedSecretKey},{x.AssignedSteamAccount}");
-            File.WriteAllLines(settings.UserStorePath, csvLines);
-        }
-
-        public static UserEntity ReadUserEntity(string csvLine)
-        {
-            string[] fields = csvLine.Split(CsvSeparator);
-
-            UserEntity user = new UserEntity();
-            user.Username = fields[0];
-            user.SharedSecretKey = fields[1];
-            user.AssignedSteamAccount = fields[2];
-
-            return user;
+            userEntityToUpdate.Username = user.Username;
+            userEntityToUpdate.SharedSecretKey = user.SharedSecretKey;
+            userEntityToUpdate.AssignedSteamAccount = user.AssignedSteamAccount;
+            
+            XmlFile.SaveEntities(Entities.Values);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
         internal static Reward ToServiceModel(this RewardEntity dataObject)
         {
             Reward serviceModel = new Reward();
+            serviceModel.Id = dataObject.Id;
             serviceModel.GiveawaysProvider = dataObject.GiveawaysProvider;
             serviceModel.GiveawayId = dataObject.GiveawayId;
             serviceModel.SteamUsername = dataObject.SteamUsername;
@@ -24,6 +25,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
         internal static RewardEntity ToDataObject(this Reward serviceModel)
         {
             RewardEntity dataObject = new RewardEntity();
+            dataObject.Id = serviceModel.Id;
             dataObject.GiveawaysProvider = serviceModel.GiveawaysProvider;
             dataObject.GiveawayId = serviceModel.GiveawayId;
             dataObject.SteamUsername = serviceModel.SteamUsername;

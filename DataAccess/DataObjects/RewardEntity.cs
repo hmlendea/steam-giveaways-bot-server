@@ -1,8 +1,10 @@
 using System;
 
+using NuciDAL.DataObjects;
+
 namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
 {
-    public sealed class RewardEntity
+    public sealed class RewardEntity : EntityBase
     {
         public string GiveawaysProvider { get; set; }
 

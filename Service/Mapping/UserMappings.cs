@@ -11,6 +11,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
         internal static User ToServiceModel(this UserEntity dataObject)
         {
             User serviceModel = new User();
+            serviceModel.Id = dataObject.Id;
             serviceModel.Username = dataObject.Username;
             serviceModel.SharedSecretKey = dataObject.SharedSecretKey;
             serviceModel.AssignedSteamAccount = dataObject.AssignedSteamAccount;
@@ -21,6 +22,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
         internal static UserEntity ToDataObject(this User serviceModel)
         {
             UserEntity dataObject = new UserEntity();
+            dataObject.Id = serviceModel.Id;
             dataObject.Username = serviceModel.Username;
             dataObject.SharedSecretKey = serviceModel.SharedSecretKey;
             dataObject.AssignedSteamAccount = serviceModel.AssignedSteamAccount;
