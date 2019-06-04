@@ -2,7 +2,7 @@ using System;
 
 using NuciDAL.Repositories;
 
-using SteamGiveawaysBot.Server.Core.Configuration;
+using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
 namespace SteamGiveawaysBot.Server.DataAccess.Repositories

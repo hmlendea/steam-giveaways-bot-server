@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using SteamGiveawaysBot.Server.Api.Models;
-using SteamGiveawaysBot.Server.Core.Configuration;
+using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.DataAccess.Repositories;
 using SteamGiveawaysBot.Server.Security;
