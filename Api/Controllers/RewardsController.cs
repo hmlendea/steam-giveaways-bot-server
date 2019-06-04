@@ -20,6 +20,7 @@ namespace SteamGiveawaysBot.Server.Controllers
         {
             this.service = service;
         }
+        
         [HttpGet]
         public ActionResult GetAccount()
         {
