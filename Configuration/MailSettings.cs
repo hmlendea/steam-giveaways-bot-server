@@ -6,6 +6,8 @@ namespace SteamGiveawaysBot.Server.Configuration
 
         public string SenderAddress { get; set; }
 
+        public string SenderName { get; set; }
+
         public string SenderPassword { get; set; }
     }
 }
