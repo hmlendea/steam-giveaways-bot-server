@@ -5,6 +5,7 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 
 using NuciExtensions;
+using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.DataAccess.Repositories;

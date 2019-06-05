@@ -1,3 +1,5 @@
+using NuciSecurity.HMAC;
+
 using SteamGiveawaysBot.Server.Api.Models;
 
 namespace SteamGiveawaysBot.Server.Security
