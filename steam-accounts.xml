@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSteamAccountEntity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <SteamAccountEntity>
+    <Id>test</Id>
+    <Username>test</Username>
+    <Password>test</Password>
+    <IsSteamGiftsSuspended>false</IsSteamGiftsSuspended>
+  </SteamAccountEntity>
+
+</ArrayOfSteamAccountEntity>
