@@ -4,11 +4,12 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
+using NuciDAL.Repositories;
 using NuciExtensions;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
-using SteamGiveawaysBot.Server.DataAccess.Repositories;
+using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
@@ -17,17 +18,17 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public sealed class SteamAccountService : ISteamAccountService
     {
-        readonly IUserRepository userRepository;
+        readonly IXmlRepository<UserEntity> userRepository;
 
-        readonly ISteamAccountRepository steamAccountRepository;
+        readonly IXmlRepository<SteamAccountEntity> steamAccountRepository;
 
         readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder;
 
         readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder;
 
         public SteamAccountService(
-            IUserRepository userRepository,
-            ISteamAccountRepository steamAccountRepository,
+            IXmlRepository<UserEntity> userRepository,
+            IXmlRepository<SteamAccountEntity> steamAccountRepository,
             IHmacEncoder<SteamAccountRequest> requestHmacEncoder,
             IHmacEncoder<SteamAccountResponse> responseHmacEncoder)
         {

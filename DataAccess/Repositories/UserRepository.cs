@@ -8,7 +8,7 @@ using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
 namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
-    public sealed class UserRepository : XmlRepository<UserEntity>, IUserRepository
+    public sealed class UserRepository : XmlRepository<UserEntity>
     {
         public UserRepository(DataStoreSettings settings)
             : base(settings.UserStorePath)

@@ -7,7 +7,7 @@ using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
 namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
-    public sealed class RewardRepository : XmlRepository<RewardEntity>, IRewardRepository
+    public sealed class RewardRepository : XmlRepository<RewardEntity>
     {
         public RewardRepository(DataStoreSettings settings)
             : base(settings.RewardsStorePath)
