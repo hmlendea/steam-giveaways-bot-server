@@ -56,6 +56,7 @@ namespace SteamGiveawaysBot.Server.Service
             reward.ActivationKey = request.ActivationKey;
 
             rewardRepository.Add(reward.ToDataObject());
+            rewardRepository.ApplyChanges();
 
             SendMailNotification(reward);
         }

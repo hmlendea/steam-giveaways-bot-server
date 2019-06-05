@@ -2,7 +2,7 @@ using System;
 
 namespace SteamGiveawaysBot.Server.Api.Models
 {
-    public sealed class ErrorResponse : ResponseBase
+    public sealed class ErrorResponse : Response
     {
         public override bool IsSuccess => false;
 
