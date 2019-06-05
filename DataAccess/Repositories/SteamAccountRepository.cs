@@ -7,7 +7,7 @@ using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
 namespace SteamGiveawaysBot.Server.DataAccess.Repositories
 {
-    public sealed class SteamAccountRepository : XmlRepository<SteamAccountEntity>, ISteamAccountRepository
+    public sealed class SteamAccountRepository : XmlRepository<SteamAccountEntity>
     {
         public SteamAccountRepository(DataStoreSettings settings)
             : base(settings.SteamAccountStorePath)

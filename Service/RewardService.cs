@@ -3,12 +3,12 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Authentication;
 
+using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
-using SteamGiveawaysBot.Server.DataAccess.Repositories;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
@@ -17,9 +17,9 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public class RewardService : IRewardService
     {
-        readonly IUserRepository userRepository;
+        readonly IXmlRepository<UserEntity> userRepository;
 
-        readonly IRewardRepository rewardRepository;
+        readonly IXmlRepository<RewardEntity> rewardRepository;
 
         readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder;
 
@@ -29,8 +29,8 @@ namespace SteamGiveawaysBot.Server.Service
 
         public RewardService(
 
-            IUserRepository userRepository,
-            IRewardRepository rewardRepository,
+            IXmlRepository<UserEntity> userRepository,
+            IXmlRepository<RewardEntity> rewardRepository,
             IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
             IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
             MailSettings mailSettings)

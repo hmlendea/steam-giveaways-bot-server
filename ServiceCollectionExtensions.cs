@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
@@ -34,11 +35,11 @@ namespace SteamGiveawaysBot.Server
                 .AddScoped<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
                 .AddScoped<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
                 .AddScoped<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
+                .AddScoped<IXmlRepository<UserEntity>, UserRepository>()
+                .AddScoped<IXmlRepository<SteamAccountEntity>, SteamAccountRepository>()
+                .AddScoped<IXmlRepository<RewardEntity>, RewardRepository>()
                 .AddScoped<ISteamAccountService, SteamAccountService>()
-                .AddScoped<IRewardService, RewardService>()
-                .AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<ISteamAccountRepository, SteamAccountRepository>()
-                .AddScoped<IRewardRepository, RewardRepository>();
+                .AddScoped<IRewardService, RewardService>();
         }
     }
 }
