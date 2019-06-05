@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using NuciSecurity.HMAC;
+
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;

@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Authentication;
 
+using NuciSecurity.HMAC;
+
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
