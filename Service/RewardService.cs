@@ -18,11 +18,9 @@ namespace SteamGiveawaysBot.Server.Service
     public class RewardService : IRewardService
     {
         readonly IXmlRepository<UserEntity> userRepository;
-
         readonly IXmlRepository<RewardEntity> rewardRepository;
 
         readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder;
-
         readonly IHmacEncoder<RecordRewardRequest> responseHmacEncoder;
 
         readonly MailSettings mailSettings;
@@ -48,18 +46,9 @@ namespace SteamGiveawaysBot.Server.Service
 
             ValidateRequest(request, user);
 
-            Reward reward = new Reward();
-            reward.Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{reward.SteamUsername}";
-            reward.GiveawaysProvider = request.GiveawaysProvider;
-            reward.GiveawayId = request.GiveawayId;
-            reward.SteamUsername = request.SteamUsername;
-            reward.SteamAppId = request.SteamAppId;
-            reward.GameTitle = request.GameTitle;
-            reward.ActivationKey = request.ActivationKey;
+            Reward reward = GetRewardObjectFromRequest(request);
 
-            rewardRepository.Add(reward.ToDataObject());
-            rewardRepository.ApplyChanges();
-
+            StoreReward(reward);
             SendMailNotification(reward);
         }
         
@@ -71,6 +60,26 @@ namespace SteamGiveawaysBot.Server.Service
             {
                 throw new AuthenticationException("The provided HMAC token is not valid");
             }
+        }
+
+        Reward GetRewardObjectFromRequest(RecordRewardRequest request)
+        {
+            Reward reward = new Reward();
+            reward.Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{reward.SteamUsername}";
+            reward.GiveawaysProvider = request.GiveawaysProvider;
+            reward.GiveawayId = request.GiveawayId;
+            reward.SteamUsername = request.SteamUsername;
+            reward.SteamAppId = request.SteamAppId;
+            reward.GameTitle = request.GameTitle;
+            reward.ActivationKey = request.ActivationKey;
+
+            return reward;
+        }
+
+        void StoreReward(Reward reward)
+        {
+            rewardRepository.Add(reward.ToDataObject());
+            rewardRepository.ApplyChanges();
         }
 
         void SendMailNotification(Reward reward)

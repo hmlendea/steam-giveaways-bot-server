@@ -19,11 +19,9 @@ namespace SteamGiveawaysBot.Server.Service
     public sealed class SteamAccountService : ISteamAccountService
     {
         readonly IXmlRepository<UserEntity> userRepository;
-
         readonly IXmlRepository<SteamAccountEntity> steamAccountRepository;
 
         readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder;
-
         readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder;
 
         public SteamAccountService(
@@ -45,14 +43,7 @@ namespace SteamGiveawaysBot.Server.Service
             ValidateRequest(request, user);
 
             SteamAccount assignedAccount = GetAssignedAccount(user, request.GiveawaysProvider);
-
-            SteamAccountResponse response = new SteamAccountResponse
-            {
-                Username = assignedAccount.Username,
-                Password = assignedAccount.Password
-            };
-
-            response.HmacToken = responseHmacEncoder.GenerateToken(response, user.SharedSecretKey);
+            SteamAccountResponse response = CreateResponse(user, assignedAccount);
 
             return response;
         }
@@ -85,6 +76,16 @@ namespace SteamGiveawaysBot.Server.Service
             }
 
             return assignedAccount;
+        }
+
+        SteamAccountResponse CreateResponse(User user, SteamAccount steamAccount)
+        {
+            SteamAccountResponse response = new SteamAccountResponse();
+            response.Username = steamAccount.Username;
+            response.Password = steamAccount.Password;
+            response.HmacToken = responseHmacEncoder.GenerateToken(response, user.SharedSecretKey);
+
+            return response;
         }
 
         SteamAccount FindAccountToAssign(string gaProvider)
