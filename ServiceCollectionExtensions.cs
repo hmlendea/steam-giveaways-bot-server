@@ -5,6 +5,7 @@ using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.DataAccess.Repositories;
@@ -38,6 +39,7 @@ namespace SteamGiveawaysBot.Server
                 .AddScoped<IXmlRepository<UserEntity>, UserRepository>()
                 .AddScoped<IXmlRepository<SteamAccountEntity>, SteamAccountRepository>()
                 .AddScoped<IXmlRepository<RewardEntity>, RewardRepository>()
+                .AddScoped<IMailSender, GmailMailSender>()
                 .AddScoped<ISteamAccountService, SteamAccountService>()
                 .AddScoped<IRewardService, RewardService>();
         }

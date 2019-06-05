@@ -7,6 +7,7 @@ using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Security;
@@ -17,6 +18,8 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public class RewardService : IRewardService
     {
+        readonly IMailSender mailSender;
+
         readonly IXmlRepository<UserEntity> userRepository;
         readonly IXmlRepository<RewardEntity> rewardRepository;
 
@@ -26,13 +29,14 @@ namespace SteamGiveawaysBot.Server.Service
         readonly MailSettings mailSettings;
 
         public RewardService(
-
+            IMailSender mailSender,
             IXmlRepository<UserEntity> userRepository,
             IXmlRepository<RewardEntity> rewardRepository,
             IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
             IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
             MailSettings mailSettings)
         {
+            this.mailSender = mailSender;
             this.userRepository = userRepository;
             this.rewardRepository = rewardRepository;
             this.requestHmacEncoder = requestHmacEncoder;
@@ -84,31 +88,22 @@ namespace SteamGiveawaysBot.Server.Service
 
         void SendMailNotification(Reward reward)
         {
-            MailAddress senderAddress = new MailAddress(mailSettings.SenderAddress, "SteamGiveawaysBot");
-            NetworkCredential senderCredentials = new NetworkCredential(mailSettings.SenderAddress, mailSettings.SenderPassword);
-            SmtpClient client = new SmtpClient();
-            client.Host = "smtp.gmail.com";
-            client.Port = 587;
-            client.EnableSsl = true;
-            client.UseDefaultCredentials = false;
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.Credentials = senderCredentials;
+            string subject = $"SGB: \"{reward.GameTitle}\" key won";
+            string body =
+                $"Game title: {reward.GameTitle}{Environment.NewLine}" +
+                $"Giveaway provider: {reward.GiveawaysProvider}{Environment.NewLine}" +
+                $"Giveaway ID: {reward.GiveawayId}{Environment.NewLine}" +
+                $"Store URL: {reward.SteamAppUrl}{Environment.NewLine}" +
+                $"User: {reward.SteamUsername}{Environment.NewLine}" +
+                $"Activation key: {reward.ActivationKey}";
 
-            using (MailMessage mail = new MailMessage())
-            {
-                mail.From = senderAddress;
-                mail.Subject = $"SGB: \"{reward.GameTitle}\" key won";
-                mail.Body =
-                    $"Game title: {reward.GameTitle}{Environment.NewLine}" +
-                    $"Giveaway provider: {reward.GiveawaysProvider}{Environment.NewLine}" +
-                    $"Giveaway ID: {reward.GiveawayId}{Environment.NewLine}" +
-                    $"Store URL: {reward.SteamAppUrl}{Environment.NewLine}" +
-                    $"User: {reward.SteamUsername}{Environment.NewLine}" +
-                    $"Activation key: {reward.ActivationKey}";
-                mail.To.Add(mailSettings.RecipientAddress);
-
-                client.Send(mail);
-            }
+            mailSender.SendMail(
+                mailSettings.SenderAddress,
+                mailSettings.SenderName,
+                mailSettings.SenderPassword,
+                subject,
+                body,
+                mailSettings.RecipientAddress);
         }
     }
 }
