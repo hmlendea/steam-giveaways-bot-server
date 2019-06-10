@@ -17,8 +17,6 @@ namespace SteamGiveawaysBot.Server.Service.Models
         [XmlIgnore]
         public string SteamAppUrl => $"https://store.steampowered.com/app/{SteamAppId}";
 
-        public string GameTitle { get; set; }
-
         public string ActivationKey { get; set; }
     }
 }

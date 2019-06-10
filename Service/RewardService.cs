@@ -98,7 +98,6 @@ namespace SteamGiveawaysBot.Server.Service
             reward.GiveawayId = request.GiveawayId;
             reward.SteamUsername = request.SteamUsername;
             reward.SteamAppId = request.SteamAppId;
-            reward.GameTitle = request.GameTitle;
             reward.ActivationKey = request.ActivationKey;
 
             return reward;
@@ -112,9 +111,8 @@ namespace SteamGiveawaysBot.Server.Service
 
         void SendMailNotification(Reward reward)
         {
-            string subject = $"SGB: \"{reward.GameTitle}\" key won";
+            string subject = $"SGB: Key won";
             string body =
-                $"Game title: {reward.GameTitle}{Environment.NewLine}" +
                 $"Giveaway provider: {reward.GiveawaysProvider}{Environment.NewLine}" +
                 $"Giveaway ID: {reward.GiveawayId}{Environment.NewLine}" +
                 $"Store URL: {reward.SteamAppUrl}{Environment.NewLine}" +
