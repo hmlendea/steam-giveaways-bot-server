@@ -22,8 +22,8 @@ namespace SteamGiveawaysBot.Server.Service
     {
         readonly IMailSender mailSender;
 
-        readonly IXmlRepository<UserEntity> userRepository;
-        readonly IXmlRepository<RewardEntity> rewardRepository;
+        readonly IRepository<UserEntity> userRepository;
+        readonly IRepository<RewardEntity> rewardRepository;
 
         readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder;
         readonly IHmacEncoder<RecordRewardRequest> responseHmacEncoder;
@@ -34,8 +34,8 @@ namespace SteamGiveawaysBot.Server.Service
 
         public RewardService(
             IMailSender mailSender,
-            IXmlRepository<UserEntity> userRepository,
-            IXmlRepository<RewardEntity> rewardRepository,
+            IRepository<UserEntity> userRepository,
+            IRepository<RewardEntity> rewardRepository,
             IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
             IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
             MailSettings mailSettings,
@@ -55,7 +55,9 @@ namespace SteamGiveawaysBot.Server.Service
             logger.Info(
                 MyOperation.RecordReward,
                 OperationStatus.Started,
-                new LogInfo(MyLogInfoKey.User, request.Username));
+                new LogInfo(MyLogInfoKey.User, request.Username),
+                new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
+                new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
 
             User user = userRepository.Get(request.Username).ToServiceModel();
 
@@ -63,13 +65,28 @@ namespace SteamGiveawaysBot.Server.Service
 
             Reward reward = GetRewardObjectFromRequest(request);
 
+            if (WasRewardAlreadyRecorded(reward))
+            {
+                logger.Warn(
+                    MyOperation.RecordReward,
+                    OperationStatus.Failure,
+                    "Reward already recorded",
+                    new LogInfo(MyLogInfoKey.User, request.Username),
+                    new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
+                    new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
+
+                return;
+            }
+
             StoreReward(reward);
             SendMailNotification(reward);
 
             logger.Info(
                 MyOperation.RecordReward,
                 OperationStatus.Success,
-                new LogInfo(MyLogInfoKey.User, request.Username));
+                new LogInfo(MyLogInfoKey.User, request.Username),
+                new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
+                new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
         }
         
         void ValidateRequest(RecordRewardRequest request, User user)
@@ -84,7 +101,9 @@ namespace SteamGiveawaysBot.Server.Service
                     MyOperation.RecordReward,
                     OperationStatus.Failure,
                     ex,
-                    new LogInfo(MyLogInfoKey.User, request.Username));
+                    new LogInfo(MyLogInfoKey.User, request.Username),
+                    new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
+                    new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
 
                 throw ex;
             }
@@ -101,6 +120,11 @@ namespace SteamGiveawaysBot.Server.Service
             reward.ActivationKey = request.ActivationKey;
 
             return reward;
+        }
+
+        bool WasRewardAlreadyRecorded(Reward reward)
+        {
+            return rewardRepository.TryGet(reward.Id) != null;
         }
 
         void StoreReward(Reward reward)

@@ -18,15 +18,15 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public sealed class SteamAccountService : ISteamAccountService
     {
-        readonly IXmlRepository<UserEntity> userRepository;
-        readonly IXmlRepository<SteamAccountEntity> steamAccountRepository;
+        readonly IRepository<UserEntity> userRepository;
+        readonly IRepository<SteamAccountEntity> steamAccountRepository;
 
         readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder;
         readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder;
 
         public SteamAccountService(
-            IXmlRepository<UserEntity> userRepository,
-            IXmlRepository<SteamAccountEntity> steamAccountRepository,
+            IRepository<UserEntity> userRepository,
+            IRepository<SteamAccountEntity> steamAccountRepository,
             IHmacEncoder<SteamAccountRequest> requestHmacEncoder,
             IHmacEncoder<SteamAccountResponse> responseHmacEncoder)
         {
