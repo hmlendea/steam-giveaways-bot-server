@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using NuciDAL.Repositories;
+using NuciLog;
+using NuciLog.Core;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
@@ -33,6 +35,7 @@ namespace SteamGiveawaysBot.Server
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             return services
+                .AddScoped<ILogger, NuciLogger>()
                 .AddScoped<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
                 .AddScoped<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
                 .AddScoped<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
