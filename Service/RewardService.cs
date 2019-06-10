@@ -4,12 +4,14 @@ using System.Net.Mail;
 using System.Security.Authentication;
 
 using NuciDAL.Repositories;
+using NuciLog.Core;
 using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.Logging;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
@@ -28,13 +30,16 @@ namespace SteamGiveawaysBot.Server.Service
 
         readonly MailSettings mailSettings;
 
+        readonly ILogger logger;
+
         public RewardService(
             IMailSender mailSender,
             IXmlRepository<UserEntity> userRepository,
             IXmlRepository<RewardEntity> rewardRepository,
             IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
             IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
-            MailSettings mailSettings)
+            MailSettings mailSettings,
+            ILogger logger)
         {
             this.mailSender = mailSender;
             this.userRepository = userRepository;
@@ -42,10 +47,16 @@ namespace SteamGiveawaysBot.Server.Service
             this.requestHmacEncoder = requestHmacEncoder;
             this.responseHmacEncoder = responseHmacEncoder;
             this.mailSettings = mailSettings;
+            this.logger = logger;
         }
 
         public void RecordReward(RecordRewardRequest request)
         {
+            logger.Info(
+                MyOperation.RecordReward,
+                OperationStatus.Started,
+                new LogInfo(MyLogInfoKey.User, request.Username));
+
             User user = userRepository.Get(request.Username).ToServiceModel();
 
             ValidateRequest(request, user);
@@ -54,6 +65,11 @@ namespace SteamGiveawaysBot.Server.Service
 
             StoreReward(reward);
             SendMailNotification(reward);
+
+            logger.Info(
+                MyOperation.RecordReward,
+                OperationStatus.Success,
+                new LogInfo(MyLogInfoKey.User, request.Username));
         }
         
         void ValidateRequest(RecordRewardRequest request, User user)
@@ -62,7 +78,15 @@ namespace SteamGiveawaysBot.Server.Service
 
             if (!isTokenValid)
             {
-                throw new AuthenticationException("The provided HMAC token is not valid");
+                AuthenticationException ex = new AuthenticationException("The provided HMAC token is not valid");
+
+                logger.Error(
+                    MyOperation.RecordReward,
+                    OperationStatus.Failure,
+                    ex,
+                    new LogInfo(MyLogInfoKey.User, request.Username));
+
+                throw ex;
             }
         }
 
