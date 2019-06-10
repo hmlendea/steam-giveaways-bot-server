@@ -10,7 +10,6 @@ using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
-using SteamGiveawaysBot.Server.DataAccess.Repositories;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service;
 
@@ -39,9 +38,9 @@ namespace SteamGiveawaysBot.Server
                 .AddScoped<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
                 .AddScoped<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
                 .AddScoped<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
-                .AddScoped<IRepository<UserEntity>, UserRepository>()
-                .AddScoped<IRepository<SteamAccountEntity>, SteamAccountRepository>()
-                .AddScoped<IRepository<RewardEntity>, RewardRepository>()
+                .AddScoped<IRepository<UserEntity>, XmlRepository<UserEntity>>()
+                .AddScoped<IRepository<SteamAccountEntity>, XmlRepository<SteamAccountEntity>>()
+                .AddScoped<IRepository<RewardEntity>, XmlRepository<RewardEntity>>()
                 .AddScoped<IMailSender, GmailMailSender>()
                 .AddScoped<ISteamAccountService, SteamAccountService>()
                 .AddScoped<IRewardService, RewardService>();
