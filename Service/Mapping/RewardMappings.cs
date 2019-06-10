@@ -16,7 +16,6 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             serviceModel.GiveawayId = dataObject.GiveawayId;
             serviceModel.SteamUsername = dataObject.SteamUsername;
             serviceModel.SteamAppId = dataObject.SteamAppId;
-            serviceModel.GameTitle = dataObject.GameTitle;
             serviceModel.ActivationKey = dataObject.ActivationKey;
 
             return serviceModel;
@@ -30,7 +29,6 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             dataObject.GiveawayId = serviceModel.GiveawayId;
             dataObject.SteamUsername = serviceModel.SteamUsername;
             dataObject.SteamAppId = serviceModel.SteamAppId;
-            dataObject.GameTitle = serviceModel.GameTitle;
             dataObject.ActivationKey = serviceModel.ActivationKey;
 
             return dataObject;

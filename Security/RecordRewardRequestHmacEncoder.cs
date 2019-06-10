@@ -14,7 +14,6 @@ namespace SteamGiveawaysBot.Server.Security
                 obj.GiveawayId +
                 obj.SteamUsername +
                 obj.SteamAppId +
-                obj.GameTitle +
                 obj.ActivationKey;
 
             string hmacToken = ComputeHmacToken(stringForSigning, sharedSecretKey);
