@@ -135,13 +135,14 @@ namespace SteamGiveawaysBot.Server.Service
 
         void SendMailNotification(Reward reward)
         {
-            string subject = $"SGB: Key won";
+            string subject = $"SGB: Key won ({reward.SteamAppId})";
             string body =
                 $"Giveaway provider: {reward.GiveawaysProvider}{Environment.NewLine}" +
-                $"Giveaway ID: {reward.GiveawayId}{Environment.NewLine}" +
-                $"Store URL: {reward.SteamAppUrl}{Environment.NewLine}" +
-                $"User: {reward.SteamUsername}{Environment.NewLine}" +
-                $"Activation key: {reward.ActivationKey}";
+                $"Giveaway ID:       {reward.GiveawayId}{Environment.NewLine}" +
+                $"Store URL:         {reward.SteamAppUrl}{Environment.NewLine}" +
+                $"User:              {reward.SteamUsername}{Environment.NewLine}" +
+                $"Activation key:    {reward.ActivationKey}{Environment.NewLine}" +
+                $"Activation link:   {reward.ActivationLink}";
 
             mailSender.SendMail(
                 mailSettings.SenderAddress,
