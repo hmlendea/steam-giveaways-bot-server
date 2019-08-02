@@ -12,8 +12,6 @@ namespace SteamGiveawaysBot.Server.Api.Models
 
         public string SteamAppId { get; set; }
 
-        public string GameTitle { get; set; }
-
         public string ActivationKey { get; set; }
     }
 }

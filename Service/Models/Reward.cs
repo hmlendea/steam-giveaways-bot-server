@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using System.Xml.Serialization;
 
 namespace SteamGiveawaysBot.Server.Service.Models
 {
@@ -17,10 +16,7 @@ namespace SteamGiveawaysBot.Server.Service.Models
 
         public string SteamUsername { get; set; }
 
-        public string SteamAppId { get; set; }
-
-        [XmlIgnore]
-        public string SteamAppUrl => $"https://store.steampowered.com/app/{SteamAppId}";
+        public SteamApp SteamApp { get; set; }
 
         public string ActivationKey { get; set; }
 

@@ -15,8 +15,10 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             serviceModel.GiveawaysProvider = dataObject.GiveawaysProvider;
             serviceModel.GiveawayId = dataObject.GiveawayId;
             serviceModel.SteamUsername = dataObject.SteamUsername;
-            serviceModel.SteamAppId = dataObject.SteamAppId;
             serviceModel.ActivationKey = dataObject.ActivationKey;
+
+            serviceModel.SteamApp = new SteamApp();
+            serviceModel.SteamApp.Id = dataObject.SteamAppId;
 
             return serviceModel;
         }
@@ -28,7 +30,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             dataObject.GiveawaysProvider = serviceModel.GiveawaysProvider;
             dataObject.GiveawayId = serviceModel.GiveawayId;
             dataObject.SteamUsername = serviceModel.SteamUsername;
-            dataObject.SteamAppId = serviceModel.SteamAppId;
+            dataObject.SteamAppId = serviceModel.SteamApp.Id;
             dataObject.ActivationKey = serviceModel.ActivationKey;
 
             return dataObject;

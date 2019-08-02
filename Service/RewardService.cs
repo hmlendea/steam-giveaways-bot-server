@@ -1,6 +1,4 @@
 using System;
-using System.Net;
-using System.Net.Mail;
 using System.Security.Authentication;
 
 using NuciDAL.Repositories;
@@ -10,9 +8,9 @@ using NuciSecurity.HMAC;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
+using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Logging;
-using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
 
@@ -28,8 +26,8 @@ namespace SteamGiveawaysBot.Server.Service
         readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder;
         readonly IHmacEncoder<RecordRewardRequest> responseHmacEncoder;
 
+        readonly IStorefrontDataRetriever storefrontDataRetriever;
         readonly MailSettings mailSettings;
-
         readonly ILogger logger;
 
         public RewardService(
@@ -38,6 +36,7 @@ namespace SteamGiveawaysBot.Server.Service
             IRepository<RewardEntity> rewardRepository,
             IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
             IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
+            IStorefrontDataRetriever storefrontDataRetriever,
             MailSettings mailSettings,
             ILogger logger)
         {
@@ -46,6 +45,7 @@ namespace SteamGiveawaysBot.Server.Service
             this.rewardRepository = rewardRepository;
             this.requestHmacEncoder = requestHmacEncoder;
             this.responseHmacEncoder = responseHmacEncoder;
+            this.storefrontDataRetriever = storefrontDataRetriever;
             this.mailSettings = mailSettings;
             this.logger = logger;
         }
@@ -59,11 +59,10 @@ namespace SteamGiveawaysBot.Server.Service
                 new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
                 new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
 
-            User user = userRepository.Get(request.Username).ToServiceModel();
-
-            ValidateRequest(request, user);
+            ValidateRequest(request);
 
             Reward reward = GetRewardObjectFromRequest(request);
+            reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToServiceModel();
 
             if (WasRewardAlreadyRecorded(reward))
             {
@@ -89,8 +88,19 @@ namespace SteamGiveawaysBot.Server.Service
                 new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
         }
         
-        void ValidateRequest(RecordRewardRequest request, User user)
+        void ValidateRequest(RecordRewardRequest request)
         {
+            User user = userRepository.TryGet(request.Username)?.ToServiceModel();
+
+            if (user is null)
+            {
+                AuthenticationException ex = new AuthenticationException("The provided user is not registered");
+
+                logger.Error( MyOperation.RecordReward, OperationStatus.Failure, ex, new LogInfo(MyLogInfoKey.User, request.Username));
+
+                throw ex;
+            }
+
             bool isTokenValid = requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
 
             if (!isTokenValid)
@@ -116,9 +126,11 @@ namespace SteamGiveawaysBot.Server.Service
             reward.GiveawaysProvider = request.GiveawaysProvider;
             reward.GiveawayId = request.GiveawayId;
             reward.SteamUsername = request.SteamUsername;
-            reward.SteamAppId = request.SteamAppId;
             reward.ActivationKey = request.ActivationKey;
 
+            reward.SteamApp = new SteamApp();
+            reward.SteamApp.Id = request.SteamAppId;
+            
             return reward;
         }
 
@@ -135,15 +147,17 @@ namespace SteamGiveawaysBot.Server.Service
 
         void SendMailNotification(Reward reward)
         {
-            string subject = $"SGB: Key won ({reward.SteamAppId})";
+            string subject = $"SGB: \"({reward.SteamApp.Name})\" key won";
             string body =
+                $"User:              {reward.SteamUsername}{Environment.NewLine}" +
                 $"Giveaway provider: {reward.GiveawaysProvider}{Environment.NewLine}" +
                 $"Giveaway ID:       {reward.GiveawayId}{Environment.NewLine}" +
-                $"Store URL:         {reward.SteamAppUrl}{Environment.NewLine}" +
-                $"User:              {reward.SteamUsername}{Environment.NewLine}" +
+                $"App name:          {reward.SteamApp.Name}{Environment.NewLine}" +
+                $"Store URL:         {reward.SteamApp.StoreUrl}{Environment.NewLine}" +
                 $"Activation key:    {reward.ActivationKey}{Environment.NewLine}" +
                 $"Activation link:   {reward.ActivationLink}";
 
+            logger.Info(body);
             mailSender.SendMail(
                 mailSettings.SenderAddress,
                 mailSettings.SenderName,

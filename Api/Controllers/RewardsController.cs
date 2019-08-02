@@ -34,7 +34,6 @@ namespace SteamGiveawaysBot.Server.Controllers
             [FromQuery] string gaId,
             [FromQuery] string steamUsername,
             [FromQuery] string steamAppId,
-            [FromQuery] string gameTitle,
             [FromQuery] string activationKey,
             [FromQuery] string hmac)
         {
@@ -47,7 +46,6 @@ namespace SteamGiveawaysBot.Server.Controllers
                     GiveawayId = gaId,
                     SteamUsername = steamUsername,
                     SteamAppId = steamAppId,
-                    GameTitle = gameTitle,
                     ActivationKey = activationKey,
                     HmacToken = hmac
                 };
