@@ -9,6 +9,7 @@ using NuciSecurity.HMAC;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
+using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service;
@@ -17,10 +18,13 @@ namespace SteamGiveawaysBot.Server
 {
     public static class ServiceCollectionExtensions
     {
+        static DataStoreSettings dataStoreSettings;
+        static MailSettings mailSettings;
+
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
-            DataStoreSettings dataStoreSettings = new DataStoreSettings();
-            MailSettings mailSettings = new MailSettings();
+            dataStoreSettings = new DataStoreSettings();
+            mailSettings = new MailSettings();
 
             configuration.Bind(nameof(DataStoreSettings), dataStoreSettings);
             configuration.Bind(nameof(MailSettings), mailSettings);
@@ -34,14 +38,15 @@ namespace SteamGiveawaysBot.Server
         public static IServiceCollection AddCustomServices(this IServiceCollection services)
         {
             return services
+                .AddSingleton<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
+                .AddSingleton<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
+                .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
+                .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
+                .AddSingleton<IMailSender, GmailMailSender>()
                 .AddScoped<ILogger, NuciLogger>()
-                .AddScoped<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
-                .AddScoped<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
-                .AddScoped<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
-                .AddScoped<IRepository<UserEntity>, XmlRepository<UserEntity>>()
-                .AddScoped<IRepository<SteamAccountEntity>, XmlRepository<SteamAccountEntity>>()
-                .AddScoped<IRepository<RewardEntity>, XmlRepository<RewardEntity>>()
-                .AddScoped<IMailSender, GmailMailSender>()
+                .AddScoped<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
+                .AddScoped<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
+                .AddScoped<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
                 .AddScoped<ISteamAccountService, SteamAccountService>()
                 .AddScoped<IRewardService, RewardService>();
         }
