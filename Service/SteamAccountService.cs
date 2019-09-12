@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Authentication;
-using System.Threading.Tasks;
 
 using NuciDAL.Repositories;
 using NuciExtensions;
@@ -10,7 +9,6 @@ using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
-using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
 

@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text.RegularExpressions;
 
-using NuciLog;
 using NuciLog.Core;
 
 using SteamGiveawaysBot.Server.Client.Models;
