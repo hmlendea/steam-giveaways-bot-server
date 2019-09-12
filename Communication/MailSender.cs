@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace SteamGiveawaysBot.Server.Communication
 {
@@ -12,15 +13,15 @@ namespace SteamGiveawaysBot.Server.Communication
             smtpClient = BuildSmtpClient();
         }
 
-        public void SendMail(
+        public async Task SendMailAsync(
             string senderAddress,
             string senderPassword,
             string subject,
             string body,
             params string[] recipientAddresses)
-            => SendMail(senderAddress, senderAddress, senderPassword, subject, body, recipientAddresses);
+            => await SendMailAsync(senderAddress, senderAddress, senderPassword, subject, body, recipientAddresses);
 
-        public void SendMail(
+        public async Task SendMailAsync(
             string senderAddress,
             string senderName,
             string senderPassword,
@@ -42,7 +43,7 @@ namespace SteamGiveawaysBot.Server.Communication
                     mail.To.Add(recipientAddress);
                 }
 
-                smtpClient.Send(mail);
+                await smtpClient.SendMailAsync(mail);
             }
         }
 

@@ -72,7 +72,7 @@ namespace SteamGiveawaysBot.Server.Service
             }
 
             StoreReward(reward);
-            rewardNotifier.SendNotification(reward);
+            rewardNotifier.SendNotificationAsync(reward);
 
             logger.Info(
                 MyOperation.RecordReward,
@@ -90,7 +90,11 @@ namespace SteamGiveawaysBot.Server.Service
             {
                 AuthenticationException ex = new AuthenticationException("The provided user is not registered");
 
-                logger.Error( MyOperation.RecordReward, OperationStatus.Failure, ex, new LogInfo(MyLogInfoKey.User, request.Username));
+                logger.Error(
+                    MyOperation.RecordReward,
+                    OperationStatus.Failure,
+                    ex,
+                    new LogInfo(MyLogInfoKey.User, request.Username));
 
                 throw ex;
             }

@@ -1,15 +1,17 @@
+using System.Threading.Tasks;
+
 namespace SteamGiveawaysBot.Server.Communication
 {
     public interface IMailSender
     {
-        void SendMail(
+        Task SendMailAsync(
             string senderAddress,
             string senderPassword,
             string subject,
             string body,
             params string[] recipientAddresses);
         
-        void SendMail(
+        Task SendMailAsync(
             string senderAddress,
             string senderName,
             string senderPassword,
