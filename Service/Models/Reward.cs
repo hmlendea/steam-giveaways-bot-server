@@ -14,6 +14,21 @@ namespace SteamGiveawaysBot.Server.Service.Models
 
         public string GiveawayId { get; set; }
 
+        public string GiveawayUrl
+        {
+            get
+            {
+                switch (GiveawaysProvider.ToLowerInvariant())
+                {
+                    case "steamgifts":
+                        return $"https://www.steamgifts.com/giveaway/{GiveawayId}/";
+                    
+                    default:
+                        return $"[UNKNOWN] Provider={GiveawaysProvider}, Id={GiveawayId}";
+                }
+            }
+        }
+
         public string SteamUsername { get; set; }
 
         public SteamApp SteamApp { get; set; }
