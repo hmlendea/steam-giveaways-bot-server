@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using SteamGiveawaysBot.Server.Api.Models;
 
 namespace SteamGiveawaysBot.Server.Service

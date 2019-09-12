@@ -1,4 +1,3 @@
-using System;
 using System.Security.Authentication;
 
 using NuciDAL.Repositories;

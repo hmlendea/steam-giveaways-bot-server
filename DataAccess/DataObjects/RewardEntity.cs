@@ -1,5 +1,3 @@
-using System;
-
 using NuciDAL.DataObjects;
 
 namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
