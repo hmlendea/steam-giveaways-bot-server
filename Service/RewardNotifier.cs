@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
@@ -19,7 +20,7 @@ namespace SteamGiveawaysBot.Server.Service
             this.mailSettings = mailSettings;
         }
 
-        public void SendNotification(Reward reward)
+        public async Task SendNotificationAsync(Reward reward)
         {
             string subject = $"SGB: \"({reward.SteamApp.Name})\" key won";
             string body =
@@ -30,7 +31,7 @@ namespace SteamGiveawaysBot.Server.Service
                 $"Activation link: {reward.ActivationLink}{Environment.NewLine}" +
                 $"Activation key: {reward.ActivationKey}";
 
-            mailSender.SendMail(
+            await mailSender.SendMailAsync(
                 mailSettings.SenderAddress,
                 mailSettings.SenderName,
                 mailSettings.SenderPassword,
