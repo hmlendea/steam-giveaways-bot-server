@@ -48,13 +48,13 @@ namespace SteamGiveawaysBot.Server
                 .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
                 .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
                 .AddSingleton<IMailSender, GmailMailSender>()
-                .AddScoped<ILogger, NuciLogger>()
+                .AddSingleton<ILogger, NuciLogger>()
                 .AddSingleton<IRewardNotifier, RewardNotifier>()
-                .AddScoped<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
-                .AddScoped<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
-                .AddScoped<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
-                .AddScoped<ISteamAccountService, SteamAccountService>()
-                .AddScoped<IRewardService, RewardService>();
+                .AddSingleton<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
+                .AddSingleton<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
+                .AddSingleton<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
+                .AddSingleton<ISteamAccountService, SteamAccountService>()
+                .AddSingleton<IRewardService, RewardService>();
         }
     }
 }
