@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NuciDAL.Repositories;
 using NuciLog;
+using NuciLog.Configuration;
 using NuciLog.Core;
 using NuciSecurity.HMAC;
 
@@ -20,17 +21,21 @@ namespace SteamGiveawaysBot.Server
     {
         static DataStoreSettings dataStoreSettings;
         static MailSettings mailSettings;
+        static NuciLoggerSettings loggingSettings;
 
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             dataStoreSettings = new DataStoreSettings();
             mailSettings = new MailSettings();
+            loggingSettings = new NuciLoggerSettings();
 
             configuration.Bind(nameof(DataStoreSettings), dataStoreSettings);
             configuration.Bind(nameof(MailSettings), mailSettings);
+            configuration.Bind(nameof(NuciLoggerSettings), loggingSettings);
 
             services.AddSingleton(dataStoreSettings);
             services.AddSingleton(mailSettings);
+            services.AddSingleton(loggingSettings);
 
             return services;
         }
