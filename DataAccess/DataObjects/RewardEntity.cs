@@ -17,5 +17,7 @@ namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
         public string GameTitle { get; set; }
 
         public string ActivationKey { get; set; }
+
+        public string CreationTimestamp { get; set; }
     }
 }

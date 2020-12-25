@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace SteamGiveawaysBot.Server.Service.Models
@@ -53,6 +54,13 @@ namespace SteamGiveawaysBot.Server.Service.Models
 
                 return "UNKNOWN";
             }
+        }
+
+        public DateTime CreationTime { get; set; }
+
+        public Reward()
+        {
+            CreationTime = DateTime.Now;
         }
     }
 }

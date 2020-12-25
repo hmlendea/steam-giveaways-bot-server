@@ -9,5 +9,9 @@ namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
         public string SharedSecretKey { get; set; }
 
         public string AssignedSteamAccount { get; set; }
+
+        public string CreationTimestamp { get; set; }
+
+        public string LastUpdateTimestamp { get; set; }
     }
 }
