@@ -9,5 +9,9 @@ namespace SteamGiveawaysBot.Server.DataAccess.DataObjects
         public string Password { get; set; }
 
         public bool IsSteamGiftsSuspended { get; set; }
+
+        public string CreationTimestamp { get; set; }
+
+        public string LastUpdateTimestamp { get; set; }
     }
 }

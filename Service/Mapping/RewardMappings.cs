@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
@@ -8,6 +10,8 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
 {
     static class RewardMappings
     {
+        const string DateTimeFormat = "yyyy.MM.ddTHH:mm:ss.ffffzzz";
+        
         internal static Reward ToServiceModel(this RewardEntity dataObject)
         {
             Reward serviceModel = new Reward();
@@ -19,6 +23,8 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
 
             serviceModel.SteamApp = new SteamApp();
             serviceModel.SteamApp.Id = dataObject.SteamAppId;
+
+            serviceModel.CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture);
 
             return serviceModel;
         }
@@ -32,6 +38,8 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             dataObject.SteamUsername = serviceModel.SteamUsername;
             dataObject.SteamAppId = serviceModel.SteamApp.Id;
             dataObject.ActivationKey = serviceModel.ActivationKey;
+
+            dataObject.CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat);
 
             return dataObject;
         }

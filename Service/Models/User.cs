@@ -1,3 +1,5 @@
+using System;
+
 namespace SteamGiveawaysBot.Server.Service.Models
 {
     public sealed class User
@@ -9,5 +11,15 @@ namespace SteamGiveawaysBot.Server.Service.Models
         public string SharedSecretKey { get; set; }
 
         public string AssignedSteamAccount { get; set; }
+
+        public DateTime CreationTime { get; set; }
+
+        public DateTime LastUpdateTime { get; set; }
+
+        public User()
+        {
+            CreationTime = DateTime.Now;
+            LastUpdateTime = CreationTime;
+        }
     }
 }
