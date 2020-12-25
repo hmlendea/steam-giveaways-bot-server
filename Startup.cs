@@ -17,10 +17,11 @@ namespace SteamGiveawaysBot.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+
             services
                 .AddConfigurations(Configuration)
-                .AddCustomServices()
-                .AddMvc();
+                .AddCustomServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -29,22 +30,16 @@ namespace SteamGiveawaysBot.Server
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
