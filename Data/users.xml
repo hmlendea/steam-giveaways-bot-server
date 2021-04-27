@@ -6,6 +6,8 @@
     <Username>test</Username>
     <SharedSecretKey>test</SharedSecretKey>
     <AssignedSteamAccount>test</AssignedSteamAccount>
+    <CreationTimestamp>1995.10.30T00:00:00.0000+00:00</CreationTimestamp>
+    <LastUpdateTimestamp>1995.10.30T00:00:00.0000+00:00</LastUpdateTimestamp>
   </UserEntity>
 
 </ArrayOfUserEntity>
