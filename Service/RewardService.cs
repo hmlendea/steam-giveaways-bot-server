@@ -6,6 +6,7 @@ using NuciSecurity.HMAC;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Client;
+using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Logging;
 using SteamGiveawaysBot.Server.Service.Mapping;
@@ -15,7 +16,7 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public class RewardService : IRewardService
     {
-        readonly IRewardNotifier rewardNotifier;
+        readonly INotificationSender notificationSender;
 
         readonly IRepository<UserEntity> userRepository;
         readonly IRepository<RewardEntity> rewardRepository;
@@ -27,7 +28,7 @@ namespace SteamGiveawaysBot.Server.Service
         readonly ILogger logger;
 
         public RewardService(
-            IRewardNotifier rewardNotifier,
+            INotificationSender notificationSender,
             IRepository<UserEntity> userRepository,
             IRepository<RewardEntity> rewardRepository,
             IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
@@ -35,7 +36,7 @@ namespace SteamGiveawaysBot.Server.Service
             IStorefrontDataRetriever storefrontDataRetriever,
             ILogger logger)
         {
-            this.rewardNotifier = rewardNotifier;
+            this.notificationSender = notificationSender;
             this.userRepository = userRepository;
             this.rewardRepository = rewardRepository;
             this.requestHmacEncoder = requestHmacEncoder;
@@ -72,7 +73,7 @@ namespace SteamGiveawaysBot.Server.Service
             }
 
             StoreReward(reward);
-            rewardNotifier.SendNotificationAsync(reward);
+            notificationSender.SendNotificationAsync(reward);
 
             logger.Info(
                 MyOperation.RecordReward,

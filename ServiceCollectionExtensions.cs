@@ -49,7 +49,6 @@ namespace SteamGiveawaysBot.Server
                 .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
                 .AddSingleton<INotificationSender, TelegramNotificationSender>()
                 .AddSingleton<ILogger, NuciLogger>()
-                .AddSingleton<IRewardNotifier, RewardNotifier>()
                 .AddSingleton<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
                 .AddSingleton<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
                 .AddSingleton<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
