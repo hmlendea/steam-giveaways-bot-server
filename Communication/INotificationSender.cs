@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 
 using SteamGiveawaysBot.Server.Service.Models;
 
-namespace SteamGiveawaysBot.Server.Service
+namespace SteamGiveawaysBot.Server.Communication
 {
-    public interface IRewardNotifier
+    public interface INotificationSender
     {
         Task SendNotificationAsync(Reward reward);
     }
