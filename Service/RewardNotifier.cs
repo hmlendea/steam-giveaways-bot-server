@@ -9,14 +9,14 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public sealed class RewardNotifier : IRewardNotifier
     {
-        readonly IMailSender mailSender;
+        readonly INotificationSender notificationSender;
         readonly MailSettings mailSettings;
 
         public RewardNotifier(
-            IMailSender mailSender,
+            INotificationSender notificationSender,
             MailSettings mailSettings)
         {
-            this.mailSender = mailSender;
+            this.notificationSender = notificationSender;
             this.mailSettings = mailSettings;
         }
 
@@ -31,13 +31,7 @@ namespace SteamGiveawaysBot.Server.Service
                 $"Activation link: {reward.ActivationLink}{Environment.NewLine}" +
                 $"Activation key: {reward.ActivationKey}";
 
-            await mailSender.SendMailAsync(
-                mailSettings.SenderAddress,
-                mailSettings.SenderName,
-                mailSettings.SenderPassword,
-                subject,
-                body,
-                mailSettings.RecipientAddress);
+            await notificationSender.SendNotification($"{subject}\n{body}");
         }
     }
 }

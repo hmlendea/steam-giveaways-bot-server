@@ -21,20 +21,24 @@ namespace SteamGiveawaysBot.Server
     {
         static DataStoreSettings dataStoreSettings;
         static MailSettings mailSettings;
+        static TelegramSettings telegramSettings;
         static NuciLoggerSettings loggingSettings;
 
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             dataStoreSettings = new DataStoreSettings();
             mailSettings = new MailSettings();
+            telegramSettings = new TelegramSettings();
             loggingSettings = new NuciLoggerSettings();
 
             configuration.Bind(nameof(DataStoreSettings), dataStoreSettings);
             configuration.Bind(nameof(MailSettings), mailSettings);
+            configuration.Bind(nameof(TelegramSettings), telegramSettings);
             configuration.Bind(nameof(NuciLoggerSettings), loggingSettings);
 
             services.AddSingleton(dataStoreSettings);
             services.AddSingleton(mailSettings);
+            services.AddSingleton(telegramSettings);
             services.AddSingleton(loggingSettings);
 
             return services;
@@ -48,6 +52,7 @@ namespace SteamGiveawaysBot.Server
                 .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
                 .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
                 .AddSingleton<IMailSender, GmailMailSender>()
+                .AddSingleton<INotificationSender, TelegramNotificationSender>()
                 .AddSingleton<ILogger, NuciLogger>()
                 .AddSingleton<IRewardNotifier, RewardNotifier>()
                 .AddSingleton<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
