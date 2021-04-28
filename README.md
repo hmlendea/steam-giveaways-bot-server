@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/hmlendea/steam-giveaways-bot-server.svg?branch=master)](https://travis-ci.com/hmlendea/steam-giveaways-bot-server)
+[![Build Status](https://github.com/github/docs/actions/workflows/dotnet.yml/badge.svg)](https://github.com/hmlendea/steam-giveaways-bot-server/actions/workflows/dotnet.yml)
 
 # SteamGiveawaysBot Server
 
