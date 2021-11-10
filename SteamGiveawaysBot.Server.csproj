@@ -6,11 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="NuciDAL" Version="1.1.1" />
-    <PackageReference Include="NuciExtensions" Version="1.4.1.1" />
-    <PackageReference Include="NuciLog" Version="1.1.0" />
-    <PackageReference Include="NuciLog.Core" Version="2.2.5" />
+    <PackageReference Include="NuciExtensions" Version="1.4.1.2" />
+    <PackageReference Include="NuciLog" Version="1.1.0.1" />
+    <PackageReference Include="NuciLog.Core" Version="2.3.1" />
     <PackageReference Include="NuciSecurity.HMAC" Version="1.0.0" />
-    <PackageReference Include="Telegram.Bot" Version="15.7.1" />
+    <PackageReference Include="Telegram.Bot" Version="16.0.2" />
   </ItemGroup>
 
   <ItemGroup>
