@@ -39,7 +39,7 @@ namespace SteamGiveawaysBot.Server.Communication
                 parseMode: ParseMode.Markdown,
                 text:
                     $"*Key won*: [{reward.SteamApp.Name}]({reward.SteamApp.StoreUrl}) " +
-                    $"_(by _[{reward.SteamUsername}]({reward.GiveawayUrl})_)_\n" +
+                    $"_(by _[{reward.SteamUsername}]({reward.GiveawayUrl}/winners)_)_\n" +
                     $"[{reward.ActivationKey}]({reward.ActivationLink})"
             );
         }
