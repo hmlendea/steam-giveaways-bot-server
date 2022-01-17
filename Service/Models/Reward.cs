@@ -22,7 +22,7 @@ namespace SteamGiveawaysBot.Server.Service.Models
                 switch (GiveawaysProvider.ToLowerInvariant())
                 {
                     case "steamgifts":
-                        return $"https://www.steamgifts.com/giveaway/{GiveawayId}/";
+                        return $"https://steamgifts.com/giveaway/{GiveawayId}/ga/";
                     
                     default:
                         return $"[UNKNOWN] Provider={GiveawaysProvider}, Id={GiveawayId}";
