@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuciDAL" Version="1.1.1" />
-    <PackageReference Include="NuciExtensions" Version="1.5.0" />
+    <PackageReference Include="NuciDAL" Version="2.1.0" />
+    <PackageReference Include="NuciExtensions" Version="3.0.0" />
     <PackageReference Include="NuciLog" Version="1.1.0.1" />
     <PackageReference Include="NuciLog.Core" Version="2.3.1" />
-    <PackageReference Include="NuciSecurity.HMAC" Version="1.0.0" />
-    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+    <PackageReference Include="NuciSecurity.HMAC" Version="2.0.0" />
+    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
 
   <ItemGroup>
