@@ -1,25 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Service;
 
-namespace SteamGiveawaysBot.Server.Controllers
+namespace SteamGiveawaysBot.Server.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class SteamAccountController : ControllerBase
+    public class SteamAccountController(ISteamAccountService service) : ControllerBase
     {
-        readonly ISteamAccountService service;
-
-        public SteamAccountController(ISteamAccountService service)
-        {
-            this.service = service;
-        }
+        readonly ISteamAccountService service = service;
 
         [HttpGet("{username}")]
         public ActionResult<SteamAccountResponse> GetAccount(
@@ -29,7 +21,7 @@ namespace SteamGiveawaysBot.Server.Controllers
         {
             try
             {
-                SteamAccountRequest request = new SteamAccountRequest
+                SteamAccountRequest request = new()
                 {
                     Username = username,
                     GiveawaysProvider = gaProvider,
@@ -40,7 +32,7 @@ namespace SteamGiveawaysBot.Server.Controllers
             }
             catch (Exception ex)
             {
-                ErrorResponse response = new ErrorResponse(ex);
+                ErrorResponse response = new(ex);
                 return BadRequest(response);
             }
         }

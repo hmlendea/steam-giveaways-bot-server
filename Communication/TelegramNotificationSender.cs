@@ -8,22 +8,14 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Communication
 {
-    public class TelegramNotificationSender : INotificationSender
+    public class TelegramNotificationSender(TelegramSettings telegramSettings) : INotificationSender
     {
-        readonly TelegramSettings telegramSettings;
+        readonly TelegramSettings telegramSettings = telegramSettings;
 
-        readonly ITelegramBotClient botClient;
-
-        public TelegramNotificationSender(TelegramSettings telegramSettings)
-        {
-            this.telegramSettings = telegramSettings;
-
-            botClient = new TelegramBotClient(telegramSettings.AccessToken);
-        }
+        readonly TelegramBotClient botClient = new(telegramSettings.AccessToken);
 
         public async Task SendNotificationAsync(Reward reward)
-        {
-            await botClient.SendMessage(
+            => await botClient.SendMessage(
                 chatId: telegramSettings.ChatId,
                 parseMode: ParseMode.Markdown,
                 text:
@@ -31,6 +23,5 @@ namespace SteamGiveawaysBot.Server.Communication
                     $"_(by _[{reward.SteamUsername}]({reward.GiveawayUrl}/winners)_)_\n" +
                     $"[{reward.ActivationKey}]({reward.ActivationLink})"
             );
-        }
     }
 }

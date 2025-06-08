@@ -8,14 +8,8 @@ namespace SteamGiveawaysBot.Server.Api.Models
 
         public string ErrorMessage { get; }
 
-        public ErrorResponse(string errorMessage)
-        {
-            ErrorMessage = errorMessage;
-        }
+        public ErrorResponse(string errorMessage) => ErrorMessage = errorMessage;
 
-        public ErrorResponse(Exception exception)
-        {
-            ErrorMessage = exception.Message;
-        }
+        public ErrorResponse(Exception exception) => ErrorMessage = exception.Message;
     }
 }

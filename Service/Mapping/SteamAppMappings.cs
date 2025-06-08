@@ -8,36 +8,22 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
 {
     static class SteamAppMappings
     {
-        internal static SteamApp ToServiceModel(this SteamAppEntity dataObject)
+        internal static SteamApp ToServiceModel(this SteamAppEntity dataObject) => new()
         {
-            SteamApp serviceModel = new SteamApp();
-            serviceModel.Id = dataObject.Id;
-            serviceModel.Name = dataObject.Name;
+            Id = dataObject.Id,
+            Name = dataObject.Name
+        };
 
-            return serviceModel;
-        }
-
-        internal static SteamAppEntity ToDataObject(this SteamApp serviceModel)
+        internal static SteamAppEntity ToDataObject(this SteamApp serviceModel) => new()
         {
-            SteamAppEntity dataObject = new SteamAppEntity();
-            dataObject.Id = serviceModel.Id;
-            dataObject.Name = serviceModel.Name;
-
-            return dataObject;
-        }
+            Id = serviceModel.Id,
+            Name = serviceModel.Name
+        };
 
         internal static IEnumerable<SteamApp> ToServiceModels(this IEnumerable<SteamAppEntity> dataObjects)
-        {
-            IEnumerable<SteamApp> serviceModels = dataObjects.Select(dataObject => dataObject.ToServiceModel());
-
-            return serviceModels;
-        }
+            => dataObjects.Select(dataObject => dataObject.ToServiceModel());
 
         internal static IEnumerable<SteamAppEntity> ToEntities(this IEnumerable<SteamApp> serviceModels)
-        {
-            IEnumerable<SteamAppEntity> dataObjects = serviceModels.Select(serviceModel => serviceModel.ToDataObject());
-
-            return dataObjects;
-        }
+            => serviceModels.Select(serviceModel => serviceModel.ToDataObject());
     }
 }
