@@ -11,7 +11,7 @@ namespace SteamGiveawaysBot.Server.Communication
     public class TelegramNotificationSender : INotificationSender
     {
         readonly TelegramSettings telegramSettings;
-        
+
         readonly ITelegramBotClient botClient;
 
         public TelegramNotificationSender(TelegramSettings telegramSettings)
@@ -34,7 +34,7 @@ namespace SteamGiveawaysBot.Server.Communication
                 $"Activation key: {reward.ActivationKey}";
             */
 
-            await botClient.SendTextMessageAsync(
+            await botClient.SendMessage(
                 chatId: telegramSettings.ChatId,
                 parseMode: ParseMode.Markdown,
                 text:
