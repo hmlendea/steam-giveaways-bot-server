@@ -11,47 +11,31 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
     static class UserMappings
     {
         const string DateTimeFormat = "yyyy.MM.ddTHH:mm:ss.ffffzzz";
-        
-        internal static User ToServiceModel(this UserEntity dataObject)
+
+        internal static User ToServiceModel(this UserEntity dataObject) => new()
         {
-            User serviceModel = new User();
-            serviceModel.Id = dataObject.Id;
-            serviceModel.Username = dataObject.Username;
-            serviceModel.SharedSecretKey = dataObject.SharedSecretKey;
-            serviceModel.AssignedSteamAccount = dataObject.AssignedSteamAccount;
+            Id = dataObject.Id,
+            Username = dataObject.Username,
+            SharedSecretKey = dataObject.SharedSecretKey,
+            AssignedSteamAccount = dataObject.AssignedSteamAccount,
+            CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture),
+            LastUpdateTime = DateTime.ParseExact(dataObject.LastUpdateTimestamp, DateTimeFormat, CultureInfo.InvariantCulture)
+        };
 
-            serviceModel.CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture);
-            serviceModel.LastUpdateTime = DateTime.ParseExact(dataObject.LastUpdateTimestamp, DateTimeFormat, CultureInfo.InvariantCulture);
-
-            return serviceModel;
-        }
-
-        internal static UserEntity ToDataObject(this User serviceModel)
+        internal static UserEntity ToDataObject(this User serviceModel) => new()
         {
-            UserEntity dataObject = new UserEntity();
-            dataObject.Id = serviceModel.Id;
-            dataObject.Username = serviceModel.Username;
-            dataObject.SharedSecretKey = serviceModel.SharedSecretKey;
-            dataObject.AssignedSteamAccount = serviceModel.AssignedSteamAccount;
-
-            dataObject.CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat);
-            dataObject.LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(DateTimeFormat);
-
-            return dataObject;
-        }
+            Id = serviceModel.Id,
+            Username = serviceModel.Username,
+            SharedSecretKey = serviceModel.SharedSecretKey,
+            AssignedSteamAccount = serviceModel.AssignedSteamAccount,
+            CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat),
+            LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(DateTimeFormat)
+        };
 
         internal static IEnumerable<User> ToServiceModels(this IEnumerable<UserEntity> dataObjects)
-        {
-            IEnumerable<User> serviceModels = dataObjects.Select(dataObject => dataObject.ToServiceModel());
-
-            return serviceModels;
-        }
+            => dataObjects.Select(dataObject => dataObject.ToServiceModel());
 
         internal static IEnumerable<UserEntity> ToEntities(this IEnumerable<User> serviceModels)
-        {
-            IEnumerable<UserEntity> dataObjects = serviceModels.Select(serviceModel => serviceModel.ToDataObject());
-
-            return dataObjects;
-        }
+            => serviceModels.Select(serviceModel => serviceModel.ToDataObject());
     }
 }

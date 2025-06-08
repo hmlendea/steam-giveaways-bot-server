@@ -40,20 +40,17 @@ namespace SteamGiveawaysBot.Server
             return services;
         }
 
-        public static IServiceCollection AddCustomServices(this IServiceCollection services)
-        {
-            return services
-                .AddSingleton<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
-                .AddSingleton<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
-                .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
-                .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
-                .AddSingleton<INotificationSender, TelegramNotificationSender>()
-                .AddSingleton<ILogger, NuciLogger>()
-                .AddSingleton<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
-                .AddSingleton<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
-                .AddSingleton<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
-                .AddSingleton<ISteamAccountService, SteamAccountService>()
-                .AddSingleton<IRewardService, RewardService>();
-        }
+        public static IServiceCollection AddCustomServices(this IServiceCollection services) => services
+            .AddSingleton<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
+            .AddSingleton<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
+            .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
+            .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
+            .AddSingleton<INotificationSender, TelegramNotificationSender>()
+            .AddSingleton<ILogger, NuciLogger>()
+            .AddSingleton<IRepository<UserEntity>>(x => new XmlRepository<UserEntity>(dataStoreSettings.UserStorePath))
+            .AddSingleton<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
+            .AddSingleton<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
+            .AddSingleton<ISteamAccountService, SteamAccountService>()
+            .AddSingleton<IRewardService, RewardService>();
     }
 }

@@ -7,18 +7,13 @@ namespace SteamGiveawaysBot.Server.Security
     public sealed class RecordRewardRequestHmacEncoder : HmacEncoder<RecordRewardRequest>
     {
         public override string GenerateToken(RecordRewardRequest obj, string sharedSecretKey)
-        {
-            string stringForSigning =
+            => ComputeHmacToken(
                 obj.Username +
                 obj.GiveawaysProvider +
                 obj.GiveawayId +
                 obj.SteamUsername +
                 obj.SteamAppId +
-                obj.ActivationKey;
-
-            string hmacToken = ComputeHmacToken(stringForSigning, sharedSecretKey);
-
-            return hmacToken;
-        }
+                obj.ActivationKey,
+                sharedSecretKey);
     }
 }

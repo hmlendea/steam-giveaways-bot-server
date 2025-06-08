@@ -8,21 +8,14 @@ using SteamGiveawaysBot.Server.Logging;
 
 namespace SteamGiveawaysBot.Server.Client
 {
-    public sealed class StorefrontDataRetriever : IStorefrontDataRetriever
+    public sealed class StorefrontDataRetriever(ILogger logger) : IStorefrontDataRetriever
     {
         const string StorefrontApiUrl = "http://store.steampowered.com/api";
         const string StorefrontApiCountry = "RO";
         const string StorefrontApiFilters = "basic";
 
-        readonly WebClient webClient;
-        readonly ILogger logger;
-
-        public StorefrontDataRetriever(ILogger logger)
-        {
-            webClient = new WebClient();
-
-            this.logger = logger;
-        }
+        readonly WebClient webClient = new();
+        readonly ILogger logger = logger;
 
         public SteamAppEntity GetAppData(string appId)
         {
@@ -33,9 +26,11 @@ namespace SteamGiveawaysBot.Server.Client
             string endpoint = $"{StorefrontApiUrl}/appdetails?appids={appId}&cc={StorefrontApiCountry}&filters={StorefrontApiFilters}";
             string responseContent = webClient.DownloadString(endpoint);
 
-            SteamAppEntity steamAppEntity = new SteamAppEntity();
-            steamAppEntity.Id = appId;
-            steamAppEntity.Name = Regex.Match(responseContent, namePattern).Groups[1].Value;
+            SteamAppEntity steamAppEntity = new()
+            {
+                Id = appId,
+                Name = Regex.Match(responseContent, namePattern).Groups[1].Value
+            };
 
             logger.Debug(MyOperation.AppDataRetrieval, OperationStatus.Success, new LogInfo(MyLogInfoKey.AppId, appId));
 

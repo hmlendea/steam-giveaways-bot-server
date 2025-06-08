@@ -14,36 +14,25 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Service
 {
-    public class RewardService : IRewardService
+    public class RewardService(
+        INotificationSender notificationSender,
+        IRepository<UserEntity> userRepository,
+        IRepository<RewardEntity> rewardRepository,
+        IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
+        IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
+        IStorefrontDataRetriever storefrontDataRetriever,
+        ILogger logger) : IRewardService
     {
-        readonly INotificationSender notificationSender;
+        readonly INotificationSender notificationSender = notificationSender;
 
-        readonly IRepository<UserEntity> userRepository;
-        readonly IRepository<RewardEntity> rewardRepository;
+        readonly IRepository<UserEntity> userRepository = userRepository;
+        readonly IRepository<RewardEntity> rewardRepository = rewardRepository;
 
-        readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder;
-        readonly IHmacEncoder<RecordRewardRequest> responseHmacEncoder;
+        readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder = requestHmacEncoder;
+        readonly IHmacEncoder<RecordRewardRequest> responseHmacEncoder = responseHmacEncoder;
 
-        readonly IStorefrontDataRetriever storefrontDataRetriever;
-        readonly ILogger logger;
-
-        public RewardService(
-            INotificationSender notificationSender,
-            IRepository<UserEntity> userRepository,
-            IRepository<RewardEntity> rewardRepository,
-            IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
-            IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
-            IStorefrontDataRetriever storefrontDataRetriever,
-            ILogger logger)
-        {
-            this.notificationSender = notificationSender;
-            this.userRepository = userRepository;
-            this.rewardRepository = rewardRepository;
-            this.requestHmacEncoder = requestHmacEncoder;
-            this.responseHmacEncoder = responseHmacEncoder;
-            this.storefrontDataRetriever = storefrontDataRetriever;
-            this.logger = logger;
-        }
+        readonly IStorefrontDataRetriever storefrontDataRetriever = storefrontDataRetriever;
+        readonly ILogger logger = logger;
 
         public void RecordReward(RecordRewardRequest request)
         {
@@ -59,7 +48,7 @@ namespace SteamGiveawaysBot.Server.Service
             Reward reward = GetRewardObjectFromRequest(request);
             reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToServiceModel();
 
-            if (WasRewardAlreadyRecorded(reward))
+            if (RewardWasAlreadyRecorded(reward))
             {
                 logger.Warn(
                     MyOperation.RecordReward,
@@ -82,14 +71,14 @@ namespace SteamGiveawaysBot.Server.Service
                 new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
                 new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
         }
-        
+
         void ValidateRequest(RecordRewardRequest request)
         {
             User user = userRepository.TryGet(request.Username)?.ToServiceModel();
 
             if (user is null)
             {
-                AuthenticationException ex = new AuthenticationException("The provided user is not registered");
+                AuthenticationException ex = new("The provided user is not registered");
 
                 logger.Error(
                     MyOperation.RecordReward,
@@ -104,7 +93,7 @@ namespace SteamGiveawaysBot.Server.Service
 
             if (!isTokenValid)
             {
-                AuthenticationException ex = new AuthenticationException("The provided HMAC token is not valid");
+                AuthenticationException ex = new("The provided HMAC token is not valid");
 
                 logger.Error(
                     MyOperation.RecordReward,
@@ -118,25 +107,21 @@ namespace SteamGiveawaysBot.Server.Service
             }
         }
 
-        Reward GetRewardObjectFromRequest(RecordRewardRequest request)
+        static Reward GetRewardObjectFromRequest(RecordRewardRequest request) => new()
         {
-            Reward reward = new Reward();
-            reward.Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{reward.SteamUsername}";
-            reward.GiveawaysProvider = request.GiveawaysProvider;
-            reward.GiveawayId = request.GiveawayId;
-            reward.SteamUsername = request.SteamUsername;
-            reward.ActivationKey = request.ActivationKey;
+            Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{request.SteamUsername}",
+            GiveawaysProvider = request.GiveawaysProvider,
+            GiveawayId = request.GiveawayId,
+            SteamUsername = request.SteamUsername,
+            ActivationKey = request.ActivationKey,
+            SteamApp = new SteamApp
+            {
+                Id = request.SteamAppId
+            }
+        };
 
-            reward.SteamApp = new SteamApp();
-            reward.SteamApp.Id = request.SteamAppId;
-            
-            return reward;
-        }
-
-        bool WasRewardAlreadyRecorded(Reward reward)
-        {
-            return rewardRepository.TryGet(reward.Id) != null;
-        }
+        bool RewardWasAlreadyRecorded(Reward reward)
+            => rewardRepository.TryGet(reward.Id) is not null;
 
         void StoreReward(Reward reward)
         {

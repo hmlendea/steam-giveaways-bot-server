@@ -10,25 +10,16 @@ namespace SteamGiveawaysBot.Server.Service.Models
         const string SteamActivationUrlFormat = "https://store.steampowered.com/account/registerkey?key={0}";
 
         public string Id { get; set; }
-        
+
         public string GiveawaysProvider { get; set; }
 
         public string GiveawayId { get; set; }
 
-        public string GiveawayUrl
+        public string GiveawayUrl => GiveawaysProvider.ToLowerInvariant() switch
         {
-            get
-            {
-                switch (GiveawaysProvider.ToLowerInvariant())
-                {
-                    case "steamgifts":
-                        return $"https://steamgifts.com/giveaway/{GiveawayId}/ga/";
-                    
-                    default:
-                        return $"[UNKNOWN] Provider={GiveawaysProvider}, Id={GiveawayId}";
-                }
-            }
-        }
+            "steamgifts" => $"https://steamgifts.com/giveaway/{GiveawayId}/ga/",
+            _ => $"[UNKNOWN] Provider={GiveawaysProvider}, Id={GiveawayId}",
+        };
 
         public string SteamUsername { get; set; }
 
@@ -46,7 +37,7 @@ namespace SteamGiveawaysBot.Server.Service.Models
                 {
                     return string.Format(SteamActivationUrlFormat, ActivationKey);
                 }
-                
+
                 if (ActivationKey.Contains("http"))
                 {
                     return ActivationKey;
@@ -58,9 +49,6 @@ namespace SteamGiveawaysBot.Server.Service.Models
 
         public DateTime CreationTime { get; set; }
 
-        public Reward()
-        {
-            CreationTime = DateTime.Now;
-        }
+        public Reward() => CreationTime = DateTime.Now;
     }
 }

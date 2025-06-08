@@ -14,25 +14,17 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Service
 {
-    public sealed class SteamAccountService : ISteamAccountService
+    public sealed class SteamAccountService(
+        IRepository<UserEntity> userRepository,
+        IRepository<SteamAccountEntity> steamAccountRepository,
+        IHmacEncoder<SteamAccountRequest> requestHmacEncoder,
+        IHmacEncoder<SteamAccountResponse> responseHmacEncoder) : ISteamAccountService
     {
-        readonly IRepository<UserEntity> userRepository;
-        readonly IRepository<SteamAccountEntity> steamAccountRepository;
+        readonly IRepository<UserEntity> userRepository = userRepository;
+        readonly IRepository<SteamAccountEntity> steamAccountRepository = steamAccountRepository;
 
-        readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder;
-        readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder;
-
-        public SteamAccountService(
-            IRepository<UserEntity> userRepository,
-            IRepository<SteamAccountEntity> steamAccountRepository,
-            IHmacEncoder<SteamAccountRequest> requestHmacEncoder,
-            IHmacEncoder<SteamAccountResponse> responseHmacEncoder)
-        {
-            this.userRepository = userRepository;
-            this.steamAccountRepository = steamAccountRepository;
-            this.requestHmacEncoder = requestHmacEncoder;
-            this.responseHmacEncoder = responseHmacEncoder;
-        }
+        readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder = requestHmacEncoder;
+        readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder = responseHmacEncoder;
 
         public SteamAccountResponse GetAccount(SteamAccountRequest request)
         {
@@ -48,9 +40,7 @@ namespace SteamGiveawaysBot.Server.Service
 
         void ValidateRequest(SteamAccountRequest request, User user)
         {
-            bool isTokenValid = requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
-
-            if (!isTokenValid)
+            if (!requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
             {
                 throw new AuthenticationException("The provided HMAC token is not valid");
             }
@@ -78,9 +68,12 @@ namespace SteamGiveawaysBot.Server.Service
 
         SteamAccountResponse CreateResponse(User user, SteamAccount steamAccount)
         {
-            SteamAccountResponse response = new SteamAccountResponse();
-            response.Username = steamAccount.Username;
-            response.Password = steamAccount.Password;
+            SteamAccountResponse response = new()
+            {
+                Username = steamAccount.Username,
+                Password = steamAccount.Password
+            };
+
             response.HmacToken = responseHmacEncoder.GenerateToken(response, user.SharedSecretKey);
 
             return response;
@@ -98,9 +91,7 @@ namespace SteamGiveawaysBot.Server.Service
                 steamAccounts = steamAccounts.Where(x => !x.IsSteamGiftsSuspended);
             }
 
-            SteamAccount randomAccount = steamAccounts.GetRandomElement();
-
-            return randomAccount;
+            return steamAccounts.GetRandomElement();
         }
 
         bool DoesItNeedReuser(User user, string gaProvider)

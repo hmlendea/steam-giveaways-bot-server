@@ -1,31 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Service;
 
-namespace SteamGiveawaysBot.Server.Controllers
+namespace SteamGiveawaysBot.Server.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RewardsController : ControllerBase
+    public class RewardsController(IRewardService service) : ControllerBase
     {
-        readonly IRewardService service;
+        readonly IRewardService service = service;
 
-        public RewardsController(IRewardService service)
-        {
-            this.service = service;
-        }
-        
         [HttpGet]
-        public ActionResult GetAccount()
-        {
-            return Ok();
-        }
+        public ActionResult GetAccount() => Ok();
 
         [HttpPost]
         public ActionResult RecordReward(
@@ -39,7 +28,7 @@ namespace SteamGiveawaysBot.Server.Controllers
         {
             try
             {
-                RecordRewardRequest request = new RecordRewardRequest
+                RecordRewardRequest request = new()
                 {
                     Username = username,
                     GiveawaysProvider = gaProvider,
@@ -56,7 +45,7 @@ namespace SteamGiveawaysBot.Server.Controllers
             }
             catch (Exception ex)
             {
-                ErrorResponse response = new ErrorResponse(ex);
+                ErrorResponse response = new(ex);
                 return BadRequest(response);
             }
         }
