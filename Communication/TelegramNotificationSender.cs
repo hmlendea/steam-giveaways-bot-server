@@ -23,17 +23,6 @@ namespace SteamGiveawaysBot.Server.Communication
 
         public async Task SendNotificationAsync(Reward reward)
         {
-            /*
-            string message = $"You have won a key for \"**{reward.SteamApp.Name}**\"!";
-            string body =
-                $"User: {reward.SteamUsername}{Environment.NewLine}" +
-                $"App name: {reward.SteamApp.Name}{Environment.NewLine}" +
-                $"Giveaway URL: {reward.GiveawayUrl}{Environment.NewLine}" +
-                $"Store URL: {reward.SteamApp.StoreUrl}{Environment.NewLine}" +
-                $"Activation link: {reward.ActivationLink}{Environment.NewLine}" +
-                $"Activation key: {reward.ActivationKey}";
-            */
-
             await botClient.SendMessage(
                 chatId: telegramSettings.ChatId,
                 parseMode: ParseMode.Markdown,
