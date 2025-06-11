@@ -18,6 +18,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             Username = dataObject.Username,
             SharedSecretKey = dataObject.SharedSecretKey,
             AssignedSteamAccount = dataObject.AssignedSteamAccount,
+            IpAddress = dataObject.IpAddress,
             CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture),
             LastUpdateTime = DateTime.ParseExact(dataObject.LastUpdateTimestamp, DateTimeFormat, CultureInfo.InvariantCulture)
         };
@@ -28,6 +29,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             Username = serviceModel.Username,
             SharedSecretKey = serviceModel.SharedSecretKey,
             AssignedSteamAccount = serviceModel.AssignedSteamAccount,
+            IpAddress = serviceModel.IpAddress,
             CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat),
             LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(DateTimeFormat)
         };
