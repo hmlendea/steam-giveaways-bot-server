@@ -41,6 +41,7 @@ namespace SteamGiveawaysBot.Server
         }
 
         public static IServiceCollection AddCustomServices(this IServiceCollection services) => services
+            .AddSingleton<IHmacEncoder<SetIpAddressRequest>, SetIpAddressRequestHmacEncoder>()
             .AddSingleton<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
             .AddSingleton<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
             .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
@@ -51,6 +52,7 @@ namespace SteamGiveawaysBot.Server
             .AddSingleton<IRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(dataStoreSettings.SteamAccountStorePath))
             .AddSingleton<IRepository<RewardEntity>>(x => new XmlRepository<RewardEntity>(dataStoreSettings.RewardsStorePath))
             .AddSingleton<ISteamAccountService, SteamAccountService>()
-            .AddSingleton<IRewardService, RewardService>();
+            .AddSingleton<IRewardService, RewardService>()
+            .AddSingleton<IUserService, UserService>();
     }
 }
