@@ -1,3 +1,5 @@
+using NuciAPI.Requests;
+
 namespace SteamGiveawaysBot.Server.Api.Models
 {
     public sealed class SteamAccountRequest : Request

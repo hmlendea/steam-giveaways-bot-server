@@ -1,7 +1,7 @@
 using System;
 
 using Microsoft.AspNetCore.Mvc;
-
+using NuciAPI.Responses;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Service;
 
@@ -41,12 +41,11 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
 
                 service.RecordReward(request);
 
-                return Ok();
+                return Ok(SuccessResponse.Default);
             }
             catch (Exception ex)
             {
-                ErrorResponse response = new(ex);
-                return BadRequest(response);
+                return BadRequest(ErrorResponse.FromException(ex));
             }
         }
     }

@@ -1,3 +1,5 @@
+using NuciAPI.Responses;
+
 namespace SteamGiveawaysBot.Server.Api.Models
 {
     public sealed class SteamAccountResponse : SuccessResponse
@@ -5,7 +7,5 @@ namespace SteamGiveawaysBot.Server.Api.Models
         public string Username { get; set; }
 
         public string Password { get; set; }
-
-        public string HmacToken { get; set; }
     }
 }

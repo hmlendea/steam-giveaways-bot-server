@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using NuciAPI.Responses;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Service;
 
@@ -24,7 +24,7 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
 
             service.SetIpAddress(request);
 
-            return Ok();
+            return Ok(SuccessResponse.Default);
         }
     }
 }

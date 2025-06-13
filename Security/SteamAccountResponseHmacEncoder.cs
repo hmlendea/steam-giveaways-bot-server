@@ -7,6 +7,6 @@ namespace SteamGiveawaysBot.Server.Security
     public sealed class SteamAccountResponseHmacEncoder : HmacEncoder<SteamAccountResponse>
     {
         public override string GenerateToken(SteamAccountResponse obj, string sharedSecretKey)
-            => ComputeHmacToken(obj.Username + obj.Password + obj.IsSuccess, sharedSecretKey);
+            => ComputeHmacToken(obj.Username + obj.Password + obj.Success, sharedSecretKey);
     }
 }
