@@ -5,14 +5,11 @@ using NuciDAL.Repositories;
 using NuciLog;
 using NuciLog.Configuration;
 using NuciLog.Core;
-using NuciSecurity.HMAC;
 
-using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Communication;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
-using SteamGiveawaysBot.Server.Security;
 using SteamGiveawaysBot.Server.Service;
 
 namespace SteamGiveawaysBot.Server
@@ -41,10 +38,6 @@ namespace SteamGiveawaysBot.Server
         }
 
         public static IServiceCollection AddCustomServices(this IServiceCollection services) => services
-            .AddSingleton<IHmacEncoder<SetIpAddressRequest>, SetIpAddressRequestHmacEncoder>()
-            .AddSingleton<IHmacEncoder<SteamAccountRequest>, SteamAccountRequestHmacEncoder>()
-            .AddSingleton<IHmacEncoder<SteamAccountResponse>, SteamAccountResponseHmacEncoder>()
-            .AddSingleton<IHmacEncoder<RecordRewardRequest>, RecordRewardRequestHmacEncoder>()
             .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
             .AddSingleton<INotificationSender, TelegramNotificationSender>()
             .AddSingleton<ILogger, NuciLogger>()

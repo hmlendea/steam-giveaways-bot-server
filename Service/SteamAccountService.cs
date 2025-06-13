@@ -16,15 +16,10 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public sealed class SteamAccountService(
         IRepository<UserEntity> userRepository,
-        IRepository<SteamAccountEntity> steamAccountRepository,
-        IHmacEncoder<SteamAccountRequest> requestHmacEncoder,
-        IHmacEncoder<SteamAccountResponse> responseHmacEncoder) : ISteamAccountService
+        IRepository<SteamAccountEntity> steamAccountRepository) : ISteamAccountService
     {
         readonly IRepository<UserEntity> userRepository = userRepository;
         readonly IRepository<SteamAccountEntity> steamAccountRepository = steamAccountRepository;
-
-        readonly IHmacEncoder<SteamAccountRequest> requestHmacEncoder = requestHmacEncoder;
-        readonly IHmacEncoder<SteamAccountResponse> responseHmacEncoder = responseHmacEncoder;
 
         public SteamAccountResponse GetAccount(SteamAccountRequest request)
         {
@@ -38,9 +33,9 @@ namespace SteamGiveawaysBot.Server.Service
             return response;
         }
 
-        void ValidateRequest(SteamAccountRequest request, User user)
+        static void ValidateRequest(SteamAccountRequest request, User user)
         {
-            if (!requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
+            if (!HmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
             {
                 throw new AuthenticationException("The provided HMAC token is not valid");
             }
@@ -66,7 +61,7 @@ namespace SteamGiveawaysBot.Server.Service
             return assignedAccount;
         }
 
-        SteamAccountResponse CreateResponse(User user, SteamAccount steamAccount)
+        static SteamAccountResponse CreateResponse(User user, SteamAccount steamAccount)
         {
             SteamAccountResponse response = new()
             {
@@ -74,7 +69,7 @@ namespace SteamGiveawaysBot.Server.Service
                 Password = steamAccount.Password
             };
 
-            response.HmacToken = responseHmacEncoder.GenerateToken(response, user.SharedSecretKey);
+            response.HmacToken = HmacEncoder.GenerateToken(response, user.SharedSecretKey);
 
             return response;
         }

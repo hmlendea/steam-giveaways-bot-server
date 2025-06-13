@@ -3,7 +3,6 @@ using System.Security.Authentication;
 using NuciDAL.Repositories;
 using NuciLog.Core;
 using NuciSecurity.HMAC;
-
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.Communication;
@@ -18,8 +17,6 @@ namespace SteamGiveawaysBot.Server.Service
         INotificationSender notificationSender,
         IRepository<UserEntity> userRepository,
         IRepository<RewardEntity> rewardRepository,
-        IHmacEncoder<RecordRewardRequest> requestHmacEncoder,
-        IHmacEncoder<RecordRewardRequest> responseHmacEncoder,
         IStorefrontDataRetriever storefrontDataRetriever,
         ILogger logger) : IRewardService
     {
@@ -27,9 +24,6 @@ namespace SteamGiveawaysBot.Server.Service
 
         readonly IRepository<UserEntity> userRepository = userRepository;
         readonly IRepository<RewardEntity> rewardRepository = rewardRepository;
-
-        readonly IHmacEncoder<RecordRewardRequest> requestHmacEncoder = requestHmacEncoder;
-        readonly IHmacEncoder<RecordRewardRequest> responseHmacEncoder = responseHmacEncoder;
 
         readonly IStorefrontDataRetriever storefrontDataRetriever = storefrontDataRetriever;
         readonly ILogger logger = logger;
@@ -89,7 +83,7 @@ namespace SteamGiveawaysBot.Server.Service
                 throw ex;
             }
 
-            bool isTokenValid = requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
+            bool isTokenValid = HmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
 
             if (!isTokenValid)
             {

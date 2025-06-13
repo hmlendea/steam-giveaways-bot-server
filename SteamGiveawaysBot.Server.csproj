@@ -7,10 +7,10 @@
   <ItemGroup>
     <PackageReference Include="NuciAPI" Version="1.0.0" />
     <PackageReference Include="NuciDAL" Version="2.2.1" />
-    <PackageReference Include="NuciExtensions" Version="5.0.0" />
+    <PackageReference Include="NuciExtensions" Version="5.1.0" />
     <PackageReference Include="NuciLog" Version="1.1.1" />
     <PackageReference Include="NuciLog.Core" Version="2.4.0" />
-    <PackageReference Include="NuciSecurity.HMAC" Version="3.0.0" />
+    <PackageReference Include="NuciSecurity.HMAC" Version="4.0.0" />
     <PackageReference Include="Telegram.Bot" Version="22.5.1" />
   </ItemGroup>
 
