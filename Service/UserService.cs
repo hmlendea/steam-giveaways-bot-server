@@ -3,7 +3,6 @@ using System.Security.Authentication;
 
 using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
-
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Service.Mapping;
@@ -11,14 +10,8 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Service
 {
-    public sealed class UserService(
-        IRepository<UserEntity> userRepository,
-        IHmacEncoder<SetIpAddressRequest> requestHmacEncoder) : IUserService
+    public sealed class UserService(IRepository<UserEntity> userRepository) : IUserService
     {
-        readonly IRepository<UserEntity> userRepository = userRepository;
-
-        readonly IHmacEncoder<SetIpAddressRequest> requestHmacEncoder = requestHmacEncoder;
-
         public void SetIpAddress(SetIpAddressRequest request)
         {
             User user = userRepository.Get(request.Username).ToServiceModel();
@@ -32,9 +25,9 @@ namespace SteamGiveawaysBot.Server.Service
             userRepository.ApplyChanges();
         }
 
-        void ValidateRequest(SetIpAddressRequest request, User user)
+        static void ValidateRequest(SetIpAddressRequest request, User user)
         {
-            if (!requestHmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
+            if (!HmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
             {
                 throw new AuthenticationException("The provided HMAC token is not valid");
             }
