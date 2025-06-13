@@ -49,18 +49,18 @@ namespace SteamGiveawaysBot.Server
 
         static void CreateStoreIfMissing(string storePath, string entityTypeName)
         {
-            var directory = Path.GetDirectoryName(storePath);
+            var directoryPath = Path.GetDirectoryName(storePath);
 
-            if (!string.IsNullOrWhiteSpace(directory) &&
-                !Directory.Exists(directory))
+            if (!string.IsNullOrWhiteSpace(directoryPath) &&
+                !Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(directory);
+                Directory.CreateDirectory(directoryPath);
             }
 
             if (!string.IsNullOrWhiteSpace(storePath) &&
                 !File.Exists(storePath))
             {
-                File.WriteAllText(storePath, $"<?xml version=\"1.0\" encoding=\"utf-8\"?><{entityTypeName} xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"></{entityTypeName}>");
+                File.WriteAllText(storePath, $"<?xml version=\"1.0\" encoding=\"utf-8\"?><ArrayOf{entityTypeName} xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"></ArrayOf{entityTypeName}>");
             }
         }
     }
