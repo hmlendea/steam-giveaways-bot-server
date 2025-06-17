@@ -15,20 +15,19 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
 
         [HttpGet("{username}")]
         public ActionResult<SteamAccountResponse> GetAccount(
-            string username,
-            [FromQuery] string gaProvider,
-            [FromQuery] string hmac)
+            [FromBody] SteamAccountRequest request,
+            string username)
         {
+            if (request is null)
+            {
+                return BadRequest(ErrorResponse.InvalidRequest);
+            }
+
+            request.Username = username;
+
             try
             {
-                SteamAccountRequest request = new()
-                {
-                    Username = username,
-                    GiveawaysProvider = gaProvider,
-                    HmacToken = hmac
-                };
-
-                return service.GetAccount(request);
+                return Ok(service.GetAccount(request));
             }
             catch (Exception ex)
             {
