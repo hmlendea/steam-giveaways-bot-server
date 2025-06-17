@@ -17,28 +17,15 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
         public ActionResult GetAccount() => Ok();
 
         [HttpPost]
-        public ActionResult RecordReward(
-            [FromQuery] string username,
-            [FromQuery] string gaProvider,
-            [FromQuery] string gaId,
-            [FromQuery] string steamUsername,
-            [FromQuery] string steamAppId,
-            [FromQuery] string activationKey,
-            [FromQuery] string hmac)
+        public ActionResult RecordReward([FromBody] RecordRewardRequest request)
         {
+            if (request is null)
+            {
+                return BadRequest(ErrorResponse.InvalidRequest);
+            }
+
             try
             {
-                RecordRewardRequest request = new()
-                {
-                    Username = username,
-                    GiveawaysProvider = gaProvider,
-                    GiveawayId = gaId,
-                    SteamUsername = steamUsername,
-                    SteamAppId = steamAppId,
-                    ActivationKey = activationKey,
-                    HmacToken = hmac
-                };
-
                 service.RecordReward(request);
 
                 return Ok(SuccessResponse.Default);

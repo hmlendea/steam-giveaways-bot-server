@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using NuciAPI.Requests;
 
 namespace SteamGiveawaysBot.Server.Api.Models
@@ -6,6 +7,7 @@ namespace SteamGiveawaysBot.Server.Api.Models
     {
         public string Username { get; set; }
 
+        [JsonPropertyName("gaProvider")]
         public string GiveawaysProvider { get; set; }
     }
 }
