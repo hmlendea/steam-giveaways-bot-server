@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using NuciAPI.Responses;
 using SteamGiveawaysBot.Server.Api.Models;
@@ -11,20 +12,26 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
     {
         [HttpPost("ip/{username}")]
         public ActionResult SetIpAddress(
-            string username,
-            [FromQuery] string ip,
-            [FromQuery] string hmac)
+            [FromBody] SetIpAddressRequest request,
+            string username)
         {
-            SetIpAddressRequest request = new()
+            if (request is null)
             {
-                Username = username,
-                IpAddress = ip,
-                HmacToken = hmac
-            };
+                return BadRequest(ErrorResponse.InvalidRequest);
+            }
 
-            service.SetIpAddress(request);
+            request.Username = username;
 
-            return Ok(SuccessResponse.Default);
+            try
+            {
+                service.SetIpAddress(request);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ErrorResponse.FromException(ex));
+            }
         }
     }
 }
