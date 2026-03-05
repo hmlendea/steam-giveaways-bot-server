@@ -1,7 +1,5 @@
-using System;
-
 using Microsoft.AspNetCore.Mvc;
-using NuciAPI.Responses;
+using NuciAPI.Controllers;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Service;
 
@@ -9,31 +7,18 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RewardsController(IRewardService service) : ControllerBase
+    public class RewardsController(IRewardService service) : NuciApiController
     {
-        readonly IRewardService service = service;
+        readonly NuciApiAuthorisation authorisation = NuciApiAuthorisation.None;
 
         [HttpGet]
         public ActionResult GetAccount() => Ok();
 
         [HttpPost]
         public ActionResult RecordReward([FromBody] RecordRewardRequest request)
-        {
-            if (request is null)
-            {
-                return BadRequest(NuciApiErrorResponse.InvalidRequest);
-            }
-
-            try
-            {
-                service.RecordReward(request);
-
-                return Ok(NuciApiSuccessResponse.Default);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(NuciApiErrorResponse.FromException(ex));
-            }
-        }
+            => ProcessRequest(
+                request,
+                () => service.RecordReward(request),
+                authorisation);
     }
 }

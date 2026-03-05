@@ -15,12 +15,9 @@ using SteamGiveawaysBot.Server.Service.Models;
 namespace SteamGiveawaysBot.Server.Service
 {
     public sealed class SteamAccountService(
-        IRepository<UserEntity> userRepository,
-        IRepository<SteamAccountEntity> steamAccountRepository) : ISteamAccountService
+        IFileRepository<UserEntity> userRepository,
+        IFileRepository<SteamAccountEntity> steamAccountRepository) : ISteamAccountService
     {
-        readonly IRepository<UserEntity> userRepository = userRepository;
-        readonly IRepository<SteamAccountEntity> steamAccountRepository = steamAccountRepository;
-
         public SteamAccountResponse GetAccount(SteamAccountRequest request)
         {
             User user = userRepository.Get(request.Username).ToServiceModel();
