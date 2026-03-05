@@ -4,7 +4,7 @@ using NuciSecurity.HMAC;
 
 namespace SteamGiveawaysBot.Server.Api.Models
 {
-    public sealed class SteamAccountRequest : NuciApiRequest
+    public sealed class GetSteamAccountRequest : NuciApiRequest
     {
         [HmacOrder(1)]
         public string Username { get; set; }

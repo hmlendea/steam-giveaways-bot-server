@@ -16,7 +16,7 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
 
         [HttpGet("{username}")]
         public ActionResult GetAccount(
-            [FromBody] SteamAccountRequest request,
+            [FromBody] GetSteamAccountRequest request,
             string username)
             => ProcessRequest(
                 request,

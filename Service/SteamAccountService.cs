@@ -18,7 +18,7 @@ namespace SteamGiveawaysBot.Server.Service
         IFileRepository<UserEntity> userRepository,
         IFileRepository<SteamAccountEntity> steamAccountRepository) : ISteamAccountService
     {
-        public SteamAccountResponse GetAccount(SteamAccountRequest request)
+        public GetSteamAccountResponse GetAccount(GetSteamAccountRequest request)
         {
             User user = userRepository.Get(request.Username).ToServiceModel();
 
@@ -27,12 +27,12 @@ namespace SteamGiveawaysBot.Server.Service
             ValidateRequest(request, user);
 
             SteamAccount assignedAccount = GetAssignedAccount(user, request.GiveawaysProvider);
-            SteamAccountResponse response = CreateResponse(user, assignedAccount);
+            GetSteamAccountResponse response = CreateResponse(user, assignedAccount);
 
             return response;
         }
 
-        static void ValidateRequest(SteamAccountRequest request, User user)
+        static void ValidateRequest(GetSteamAccountRequest request, User user)
         {
             if (!HmacValidator.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
             {
@@ -60,9 +60,9 @@ namespace SteamGiveawaysBot.Server.Service
             return assignedAccount;
         }
 
-        static SteamAccountResponse CreateResponse(User user, SteamAccount steamAccount)
+        static GetSteamAccountResponse CreateResponse(User user, SteamAccount steamAccount)
         {
-            SteamAccountResponse response = new()
+            GetSteamAccountResponse response = new()
             {
                 Username = steamAccount.Username,
                 Password = steamAccount.Password
