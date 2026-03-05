@@ -21,18 +21,18 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
         {
             if (request is null)
             {
-                return BadRequest(ErrorResponse.InvalidRequest);
+                return BadRequest(NuciApiErrorResponse.InvalidRequest);
             }
 
             try
             {
                 service.RecordReward(request);
 
-                return Ok(SuccessResponse.Default);
+                return Ok(NuciApiSuccessResponse.Default);
             }
             catch (Exception ex)
             {
-                return BadRequest(ErrorResponse.FromException(ex));
+                return BadRequest(NuciApiErrorResponse.FromException(ex));
             }
         }
     }

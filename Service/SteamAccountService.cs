@@ -35,7 +35,7 @@ namespace SteamGiveawaysBot.Server.Service
 
         static void ValidateRequest(SteamAccountRequest request, User user)
         {
-            if (!HmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
+            if (!HmacValidator.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
             {
                 throw new AuthenticationException("The provided HMAC token is not valid");
             }

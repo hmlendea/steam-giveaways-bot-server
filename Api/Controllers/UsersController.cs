@@ -17,7 +17,7 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
         {
             if (request is null)
             {
-                return BadRequest(ErrorResponse.InvalidRequest);
+                return BadRequest(NuciApiErrorResponse.InvalidRequest);
             }
 
             request.Username = username;
@@ -30,7 +30,7 @@ namespace SteamGiveawaysBot.Server.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ErrorResponse.FromException(ex));
+                return BadRequest(NuciApiErrorResponse.FromException(ex));
             }
         }
     }

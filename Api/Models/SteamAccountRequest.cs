@@ -3,7 +3,7 @@ using NuciAPI.Requests;
 
 namespace SteamGiveawaysBot.Server.Api.Models
 {
-    public sealed class SteamAccountRequest : Request
+    public sealed class SteamAccountRequest : NuciApiRequest
     {
         public string Username { get; set; }
 

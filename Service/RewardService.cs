@@ -83,7 +83,7 @@ namespace SteamGiveawaysBot.Server.Service
                 throw ex;
             }
 
-            bool isTokenValid = HmacEncoder.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
+            bool isTokenValid = HmacValidator.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
 
             if (!isTokenValid)
             {
@@ -120,7 +120,6 @@ namespace SteamGiveawaysBot.Server.Service
         void StoreReward(Reward reward)
         {
             rewardRepository.Add(reward.ToDataObject());
-            rewardRepository.ApplyChanges();
         }
     }
 }
