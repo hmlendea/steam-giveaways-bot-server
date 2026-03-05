@@ -1,37 +1,30 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
-using NuciAPI.Responses;
+using NuciAPI.Controllers;
 using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.Service;
 
 namespace SteamGiveawaysBot.Server.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UsersController(IUserService service) : ControllerBase
+    public class UsersController(
+        IUserService service,
+        SecuritySettings securitySettings) : NuciApiController
     {
+        readonly NuciApiAuthorisation authorisation = NuciApiAuthorisation.ApiKey(securitySettings.ApiKey);
+
         [HttpPost("ip/{username}")]
-        public ActionResult SetIpAddress(
+        public ActionResult RecordReward(
             [FromBody] SetIpAddressRequest request,
             string username)
-        {
-            if (request is null)
-            {
-                return BadRequest(NuciApiErrorResponse.InvalidRequest);
-            }
-
-            request.Username = username;
-
-            try
-            {
-                service.SetIpAddress(request);
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(NuciApiErrorResponse.FromException(ex));
-            }
-        }
+            => ProcessRequest(
+                request,
+                () =>
+                {
+                    request.Username = username;
+                    service.SetIpAddress(request);
+                },
+                authorisation);
     }
 }

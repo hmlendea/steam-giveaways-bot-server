@@ -17,20 +17,24 @@ namespace SteamGiveawaysBot.Server
     public static class ServiceCollectionExtensions
     {
         static DataStoreSettings dataStoreSettings;
+        static SecuritySettings securitySettings;
         static TelegramSettings telegramSettings;
         static NuciLoggerSettings loggingSettings;
 
         public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
         {
             dataStoreSettings = new DataStoreSettings();
+            securitySettings = new SecuritySettings();
             telegramSettings = new TelegramSettings();
             loggingSettings = new NuciLoggerSettings();
 
             configuration.Bind(nameof(DataStoreSettings), dataStoreSettings);
+            configuration.Bind(nameof(SecuritySettings), securitySettings);
             configuration.Bind(nameof(TelegramSettings), telegramSettings);
             configuration.Bind(nameof(NuciLoggerSettings), loggingSettings);
 
             services.AddSingleton(dataStoreSettings);
+            services.AddSingleton(securitySettings);
             services.AddSingleton(telegramSettings);
             services.AddSingleton(loggingSettings);
 

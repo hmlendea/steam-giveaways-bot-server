@@ -1,3 +1,4 @@
+using System;
 using System.Security.Authentication;
 
 using NuciDAL.Repositories;
@@ -15,19 +16,11 @@ namespace SteamGiveawaysBot.Server.Service
 {
     public class RewardService(
         INotificationSender notificationSender,
-        IRepository<UserEntity> userRepository,
-        IRepository<RewardEntity> rewardRepository,
+        IFileRepository<UserEntity> userRepository,
+        IFileRepository<RewardEntity> rewardRepository,
         IStorefrontDataRetriever storefrontDataRetriever,
         ILogger logger) : IRewardService
     {
-        readonly INotificationSender notificationSender = notificationSender;
-
-        readonly IRepository<UserEntity> userRepository = userRepository;
-        readonly IRepository<RewardEntity> rewardRepository = rewardRepository;
-
-        readonly IStorefrontDataRetriever storefrontDataRetriever = storefrontDataRetriever;
-        readonly ILogger logger = logger;
-
         public void RecordReward(RecordRewardRequest request)
         {
             logger.Info(

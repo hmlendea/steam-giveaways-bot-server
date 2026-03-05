@@ -10,7 +10,7 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Service
 {
-    public sealed class UserService(IRepository<UserEntity> userRepository) : IUserService
+    public sealed class UserService(IFileRepository<UserEntity> userRepository) : IUserService
     {
         public void SetIpAddress(SetIpAddressRequest request)
         {

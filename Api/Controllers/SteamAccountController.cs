@@ -1,38 +1,30 @@
-using System;
-
 using Microsoft.AspNetCore.Mvc;
-using NuciAPI.Responses;
+using NuciAPI.Controllers;
 using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.Service;
 
 namespace SteamGiveawaysBot.Server.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class SteamAccountController(ISteamAccountService service) : ControllerBase
+    public class SteamAccountController(
+        ISteamAccountService service,
+        SecuritySettings securitySettings) : NuciApiController
     {
-        readonly ISteamAccountService service = service;
+        readonly NuciApiAuthorisation authorisation = NuciApiAuthorisation.ApiKey(securitySettings.ApiKey);
 
         [HttpGet("{username}")]
-        public ActionResult<SteamAccountResponse> GetAccount(
-            [FromBody] SteamAccountRequest request,
+        public ActionResult GetAccount(
+            [FromBody] GetSteamAccountRequest request,
             string username)
-        {
-            if (request is null)
-            {
-                return BadRequest(NuciApiErrorResponse.InvalidRequest);
-            }
-
-            request.Username = username;
-
-            try
-            {
-                return Ok(service.GetAccount(request));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(NuciApiErrorResponse.FromException(ex));
-            }
-        }
+            => ProcessRequest(
+                request,
+                () =>
+                {
+                    request.Username = username;
+                    return service.GetAccount(request);
+                },
+                authorisation);
     }
 }
