@@ -1,12 +1,12 @@
 using System;
 using System.Security.Authentication;
-
 using NuciDAL.Repositories;
 using NuciLog.Core;
+using NuciNotifications.Client;
 using NuciSecurity.HMAC;
 using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Client;
-using SteamGiveawaysBot.Server.Communication;
+using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Logging;
 using SteamGiveawaysBot.Server.Service.Mapping;
@@ -15,10 +15,11 @@ using SteamGiveawaysBot.Server.Service.Models;
 namespace SteamGiveawaysBot.Server.Service
 {
     public class RewardService(
-        INotificationSender notificationSender,
+        INuciNotificationsClient notificationsClient,
         IFileRepository<UserEntity> userRepository,
         IFileRepository<RewardEntity> rewardRepository,
         IStorefrontDataRetriever storefrontDataRetriever,
+        NotificationSettings notificationSettings,
         ILogger logger) : IRewardService
     {
         public void RecordReward(RecordRewardRequest request)
@@ -49,7 +50,13 @@ namespace SteamGiveawaysBot.Server.Service
             }
 
             StoreReward(reward);
-            notificationSender.SendNotificationAsync(reward);
+            notificationsClient.SendEmail(
+                notificationSettings.EmailAddress,
+                "Steam Key won!",
+                $"Game: {reward.SteamApp.Name} ({reward.SteamApp.StoreUrl})" + Environment.NewLine +
+                $"Key: {reward.ActivationKey} ({reward.ActivationLink})" + Environment.NewLine +
+                $"Username: {reward.SteamUsername}" + Environment.NewLine +
+                $"Giveaway: {reward.GiveawayUrl}/winners");
 
             logger.Info(
                 MyOperation.RecordReward,
