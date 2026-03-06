@@ -19,7 +19,7 @@ namespace SteamGiveawaysBot.Server.Service
             ValidateRequest(request, user);
 
             user.IpAddress = request.IpAddress;
-            user.LastUpdateTime = DateTime.Now;
+            user.LastUpdateTime = DateTimeOffset.Now;
 
             userRepository.Update(user.ToDataObject());
         }

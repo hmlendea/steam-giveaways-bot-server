@@ -10,8 +10,6 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
 {
     static class UserMappings
     {
-        const string DateTimeFormat = "yyyy.MM.ddTHH:mm:ss.ffffzzz";
-
         internal static User ToServiceModel(this UserEntity dataObject) => new()
         {
             Id = dataObject.Id,
@@ -19,8 +17,8 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             SharedSecretKey = dataObject.SharedSecretKey,
             AssignedSteamAccount = dataObject.AssignedSteamAccount,
             IpAddress = dataObject.IpAddress,
-            CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture),
-            LastUpdateTime = DateTime.ParseExact(dataObject.LastUpdateTimestamp, DateTimeFormat, CultureInfo.InvariantCulture)
+            CreationTime = DateTimeOffset.Parse(dataObject.CreationTimestamp, CultureInfo.InvariantCulture),
+            LastUpdateTime = DateTimeOffset.Parse(dataObject.LastUpdateTimestamp, CultureInfo.InvariantCulture)
         };
 
         internal static UserEntity ToDataObject(this User serviceModel) => new()
@@ -30,8 +28,8 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             SharedSecretKey = serviceModel.SharedSecretKey,
             AssignedSteamAccount = serviceModel.AssignedSteamAccount,
             IpAddress = serviceModel.IpAddress,
-            CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat),
-            LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(DateTimeFormat)
+            CreationTimestamp = serviceModel.CreationTime.ToString(ValueFormats.DateTime),
+            LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(ValueFormats.DateTime)
         };
 
         internal static IEnumerable<User> ToServiceModels(this IEnumerable<UserEntity> dataObjects)
