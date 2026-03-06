@@ -22,6 +22,7 @@ namespace SteamGiveawaysBot.Server.Service
             user.LastUpdateTime = DateTimeOffset.Now;
 
             userRepository.Update(user.ToDataObject());
+            userRepository.ApplyChanges();
         }
 
         static void ValidateRequest(SetIpAddressRequest request, User user)

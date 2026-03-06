@@ -36,20 +36,9 @@ namespace SteamGiveawaysBot.Server.Service
             Reward reward = GetRewardObjectFromRequest(request);
             reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToServiceModel();
 
-            if (RewardWasAlreadyRecorded(reward))
-            {
-                logger.Warn(
-                    MyOperation.RecordReward,
-                    OperationStatus.Failure,
-                    "Reward already recorded",
-                    new LogInfo(MyLogInfoKey.User, request.Username),
-                    new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
-                    new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
+            rewardRepository.Add(reward.ToDataObject());
+            rewardRepository.ApplyChanges();
 
-                return;
-            }
-
-            StoreReward(reward);
             notificationsClient.SendEmail(
                 notificationSettings.EmailAddress,
                 "Steam Key won!",
@@ -113,13 +102,5 @@ namespace SteamGiveawaysBot.Server.Service
                 Id = request.SteamAppId
             }
         };
-
-        bool RewardWasAlreadyRecorded(Reward reward)
-            => rewardRepository.TryGet(reward.Id) is not null;
-
-        void StoreReward(Reward reward)
-        {
-            rewardRepository.Add(reward.ToDataObject());
-        }
     }
 }

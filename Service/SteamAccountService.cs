@@ -50,6 +50,7 @@ namespace SteamGiveawaysBot.Server.Service
 
                 user.AssignedSteamAccount = assignedAccount.Username;
                 userRepository.Update(user.ToDataObject());
+                userRepository.ApplyChanges();
             }
             else
             {
