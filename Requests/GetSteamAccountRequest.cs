@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using NuciAPI.Requests;
 using NuciSecurity.HMAC;
 
-namespace SteamGiveawaysBot.Server.Api.Models
+namespace SteamGiveawaysBot.Server.Requests
 {
     public sealed class GetSteamAccountRequest : NuciApiRequest
     {

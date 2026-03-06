@@ -4,11 +4,11 @@ using NuciDAL.Repositories;
 using NuciLog.Core;
 using NuciNotifications.Client;
 using NuciSecurity.HMAC;
-using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Logging;
+using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
 

@@ -3,8 +3,8 @@ using System.Security.Authentication;
 
 using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
-using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
 
