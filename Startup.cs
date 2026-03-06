@@ -68,6 +68,12 @@ namespace SteamGiveawaysBot.Server
             if (!string.IsNullOrWhiteSpace(storePath) &&
                 !File.Exists(storePath))
             {
+                if (storePath.EndsWith(".json"))
+                {
+                    File.WriteAllText(storePath, $"[]");
+                    return;
+                }
+
                 File.WriteAllText(storePath, $"<?xml version=\"1.0\" encoding=\"utf-8\"?><ArrayOf{entityTypeName} xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"></ArrayOf{entityTypeName}>");
             }
         }
