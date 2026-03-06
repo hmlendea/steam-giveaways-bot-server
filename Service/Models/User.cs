@@ -14,13 +14,13 @@ namespace SteamGiveawaysBot.Server.Service.Models
 
         public string IpAddress { get; set; }
 
-        public DateTime CreationTime { get; set; }
+        public DateTimeOffset CreationTime { get; set; }
 
-        public DateTime LastUpdateTime { get; set; }
+        public DateTimeOffset LastUpdateTime { get; set; }
 
         public User()
         {
-            CreationTime = DateTime.Now;
+            CreationTime = DateTimeOffset.Now;
             LastUpdateTime = CreationTime;
         }
     }

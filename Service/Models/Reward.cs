@@ -47,8 +47,8 @@ namespace SteamGiveawaysBot.Server.Service.Models
             }
         }
 
-        public DateTime CreationTime { get; set; }
+        public DateTimeOffset CreationTime { get; set; }
 
-        public Reward() => CreationTime = DateTime.Now;
+        public Reward() => CreationTime = DateTimeOffset.Now;
     }
 }

@@ -10,8 +10,6 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
 {
     static class RewardMappings
     {
-        const string DateTimeFormat = "yyyy.MM.ddTHH:mm:ss.ffffzzz";
-
         internal static Reward ToServiceModel(this RewardEntity dataObject) => new()
         {
             Id = dataObject.Id,
@@ -23,7 +21,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             {
                 Id = dataObject.SteamAppId
             },
-            CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture)
+            CreationTime = DateTimeOffset.Parse(dataObject.CreationTimestamp, CultureInfo.InvariantCulture)
         };
 
         internal static RewardEntity ToDataObject(this Reward serviceModel) => new()
@@ -34,7 +32,7 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             SteamUsername = serviceModel.SteamUsername,
             SteamAppId = serviceModel.SteamApp.Id,
             ActivationKey = serviceModel.ActivationKey,
-            CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat)
+            CreationTimestamp = serviceModel.CreationTime.ToString(ValueFormats.DateTime)
         };
 
         internal static IEnumerable<Reward> ToServiceModels(this IEnumerable<RewardEntity> dataObjects)

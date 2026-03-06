@@ -10,16 +10,14 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
 {
     static class SteamAccountMappings
     {
-        const string DateTimeFormat = "yyyy.MM.ddTHH:mm:ss.ffffzzz";
-
         internal static SteamAccount ToServiceModel(this SteamAccountEntity dataObject) => new()
         {
             Id = dataObject.Id,
             Username = dataObject.Username,
             Password = dataObject.Password,
             IsSteamGiftsSuspended = dataObject.IsSteamGiftsSuspended,
-            CreationTime = DateTime.ParseExact(dataObject.CreationTimestamp, DateTimeFormat, CultureInfo.InvariantCulture),
-            LastUpdateTime = DateTime.ParseExact(dataObject.LastUpdateTimestamp, DateTimeFormat, CultureInfo.InvariantCulture)
+            CreationTime = DateTimeOffset.Parse(dataObject.CreationTimestamp, CultureInfo.InvariantCulture),
+            LastUpdateTime = DateTimeOffset.Parse(dataObject.LastUpdateTimestamp, CultureInfo.InvariantCulture)
         };
 
         internal static SteamAccountEntity ToDataObject(this SteamAccount serviceModel) => new()
@@ -28,8 +26,8 @@ namespace SteamGiveawaysBot.Server.Service.Mapping
             Username = serviceModel.Username,
             Password = serviceModel.Password,
             IsSteamGiftsSuspended = serviceModel.IsSteamGiftsSuspended,
-            CreationTimestamp = serviceModel.CreationTime.ToString(DateTimeFormat),
-            LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(DateTimeFormat)
+            CreationTimestamp = serviceModel.CreationTime.ToString(ValueFormats.DateTime),
+            LastUpdateTimestamp = serviceModel.LastUpdateTime.ToString(ValueFormats.DateTime)
         };
 
         internal static IEnumerable<SteamAccount> ToServiceModels(this IEnumerable<SteamAccountEntity> dataObjects)
