@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NuciAPI.Middleware;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 
@@ -18,6 +19,7 @@ namespace SteamGiveawaysBot.Server
             services.AddControllers();
 
             services
+                .AddNuciApiReplayProtection()
                 .AddConfigurations(Configuration)
                 .AddCustomServices();
         }
@@ -30,6 +32,8 @@ namespace SteamGiveawaysBot.Server
             CreateStoreIfMissing(dataStoreSettings.UserStorePath, nameof(UserEntity));
             CreateStoreIfMissing(dataStoreSettings.SteamAccountStorePath, nameof(SteamAccountEntity));
 
+            app.UseNuciApiExceptionHandling();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -39,6 +43,10 @@ namespace SteamGiveawaysBot.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseNuciApiHeaderValidation();
+            app.UseNuciApiReplayProtection();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
