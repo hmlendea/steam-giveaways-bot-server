@@ -92,7 +92,7 @@ namespace SteamGiveawaysBot.Server.Service
 
         static Reward GetRewardObjectFromRequest(RecordRewardRequest request) => new()
         {
-            Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{request.SteamUsername}",
+            Id = $"{request.GiveawaysProvider}-{request.SteamUsername}-{request.GiveawayId}",
             GiveawaysProvider = request.GiveawaysProvider,
             GiveawayId = request.GiveawayId,
             SteamUsername = request.SteamUsername,
