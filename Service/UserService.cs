@@ -3,8 +3,8 @@ using System.Security.Authentication;
 
 using NuciDAL.Repositories;
 using NuciSecurity.HMAC;
-using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
 
@@ -22,6 +22,7 @@ namespace SteamGiveawaysBot.Server.Service
             user.LastUpdateTime = DateTimeOffset.Now;
 
             userRepository.Update(user.ToDataObject());
+            userRepository.ApplyChanges();
         }
 
         static void ValidateRequest(SetIpAddressRequest request, User user)

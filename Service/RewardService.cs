@@ -4,11 +4,11 @@ using NuciDAL.Repositories;
 using NuciLog.Core;
 using NuciNotifications.Client;
 using NuciSecurity.HMAC;
-using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Logging;
+using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service.Mapping;
 using SteamGiveawaysBot.Server.Service.Models;
 
@@ -36,20 +36,9 @@ namespace SteamGiveawaysBot.Server.Service
             Reward reward = GetRewardObjectFromRequest(request);
             reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToServiceModel();
 
-            if (RewardWasAlreadyRecorded(reward))
-            {
-                logger.Warn(
-                    MyOperation.RecordReward,
-                    OperationStatus.Failure,
-                    "Reward already recorded",
-                    new LogInfo(MyLogInfoKey.User, request.Username),
-                    new LogInfo(MyLogInfoKey.GiveawaysProvider, request.GiveawaysProvider),
-                    new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
+            rewardRepository.Add(reward.ToDataObject());
+            rewardRepository.ApplyChanges();
 
-                return;
-            }
-
-            StoreReward(reward);
             notificationsClient.SendEmail(
                 notificationSettings.EmailAddress,
                 "Steam Key won!",
@@ -103,7 +92,7 @@ namespace SteamGiveawaysBot.Server.Service
 
         static Reward GetRewardObjectFromRequest(RecordRewardRequest request) => new()
         {
-            Id = $"{request.GiveawaysProvider}-{request.GiveawayId}-{request.SteamUsername}",
+            Id = $"{request.GiveawaysProvider}-{request.SteamUsername}-{request.GiveawayId}",
             GiveawaysProvider = request.GiveawaysProvider,
             GiveawayId = request.GiveawayId,
             SteamUsername = request.SteamUsername,
@@ -113,13 +102,5 @@ namespace SteamGiveawaysBot.Server.Service
                 Id = request.SteamAppId
             }
         };
-
-        bool RewardWasAlreadyRecorded(Reward reward)
-            => rewardRepository.TryGet(reward.Id) is not null;
-
-        void StoreReward(Reward reward)
-        {
-            rewardRepository.Add(reward.ToDataObject());
-        }
     }
 }

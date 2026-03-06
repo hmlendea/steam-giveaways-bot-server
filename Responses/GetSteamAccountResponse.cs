@@ -1,7 +1,7 @@
 using NuciAPI.Responses;
 using NuciSecurity.HMAC;
 
-namespace SteamGiveawaysBot.Server.Api.Models
+namespace SteamGiveawaysBot.Server.Responses
 {
     public sealed class GetSteamAccountResponse : NuciApiSuccessResponse
     {

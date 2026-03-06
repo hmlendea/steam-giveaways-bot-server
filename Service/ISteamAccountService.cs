@@ -1,4 +1,5 @@
-using SteamGiveawaysBot.Server.Api.Models;
+using SteamGiveawaysBot.Server.Requests;
+using SteamGiveawaysBot.Server.Responses;
 
 namespace SteamGiveawaysBot.Server.Service
 {

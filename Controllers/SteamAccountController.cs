@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using NuciAPI.Controllers;
-using SteamGiveawaysBot.Server.Api.Models;
 using SteamGiveawaysBot.Server.Configuration;
+using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service;
 
-namespace SteamGiveawaysBot.Server.Api.Controllers
+namespace SteamGiveawaysBot.Server.Controllers
 {
     [Route("[controller]")]
     [ApiController]
