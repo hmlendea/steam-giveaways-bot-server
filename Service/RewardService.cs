@@ -37,7 +37,7 @@ namespace SteamGiveawaysBot.Server.Service
             reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToServiceModel();
 
             rewardRepository.Add(reward.ToDataObject());
-            rewardRepository.ApplyChanges();
+            rewardRepository.SaveChanges();
 
             notificationsClient.SendEmail(
                 notificationSettings.EmailAddress,
