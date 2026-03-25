@@ -32,6 +32,7 @@ namespace SteamGiveawaysBot.Server
             CreateStoreIfMissing(dataStoreSettings.UserStorePath, nameof(UserEntity));
             CreateStoreIfMissing(dataStoreSettings.SteamAccountStorePath, nameof(SteamAccountEntity));
 
+            app.UseNuciApiRequestLogging();
             app.UseNuciApiExceptionHandling();
 
             if (env.IsDevelopment())
