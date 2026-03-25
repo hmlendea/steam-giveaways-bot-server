@@ -21,8 +21,6 @@ namespace SteamGiveawaysBot.Server.Service
         {
             User user = userRepository.Get(request.Username).ToServiceModel();
 
-            Console.WriteLine(request.HmacToken);
-
             ValidateRequest(request, user);
 
             SteamAccount assignedAccount = GetAssignedAccount(user, request.GiveawaysProvider);
