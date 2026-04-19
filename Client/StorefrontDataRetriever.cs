@@ -1,4 +1,4 @@
-using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 
 using NuciLog.Core;
@@ -14,7 +14,7 @@ namespace SteamGiveawaysBot.Server.Client
         const string StorefrontApiCountry = "RO";
         const string StorefrontApiFilters = "basic";
 
-        readonly WebClient webClient = new();
+        readonly HttpClient httpClient = new();
         readonly ILogger logger = logger;
 
         public SteamAppEntity GetAppData(string appId)
@@ -24,7 +24,7 @@ namespace SteamGiveawaysBot.Server.Client
             logger.Info(MyOperation.AppDataRetrieval, OperationStatus.Started, new LogInfo(MyLogInfoKey.AppId, appId));
 
             string endpoint = $"{StorefrontApiUrl}/appdetails?appids={appId}&cc={StorefrontApiCountry}&filters={StorefrontApiFilters}";
-            string responseContent = webClient.DownloadString(endpoint);
+            string responseContent = httpClient.GetStringAsync(endpoint).GetAwaiter().GetResult();
 
             SteamAppEntity steamAppEntity = new()
             {
