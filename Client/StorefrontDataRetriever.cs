@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 
@@ -21,7 +22,15 @@ namespace SteamGiveawaysBot.Server.Client
         {
             const string namePattern = "\"name\": *\"([^\"]*)\"";
 
-            logger.Info(MyOperation.AppDataRetrieval, OperationStatus.Started, new LogInfo(MyLogInfoKey.AppId, appId));
+            IEnumerable<LogInfo> logInfos =
+            [
+                new(MyLogInfoKey.AppId, appId)
+            ];
+
+            logger.Info(
+                MyOperation.AppDataRetrieval,
+                OperationStatus.Started,
+                logInfos);
 
             string endpoint = $"{StorefrontApiUrl}/appdetails?appids={appId}&cc={StorefrontApiCountry}&filters={StorefrontApiFilters}";
             string responseContent = httpClient.GetStringAsync(endpoint).GetAwaiter().GetResult();
@@ -32,7 +41,10 @@ namespace SteamGiveawaysBot.Server.Client
                 Name = Regex.Match(responseContent, namePattern).Groups[1].Value
             };
 
-            logger.Debug(MyOperation.AppDataRetrieval, OperationStatus.Success, new LogInfo(MyLogInfoKey.AppId, appId));
+            logger.Debug(
+                MyOperation.AppDataRetrieval,
+                OperationStatus.Success,
+                logInfos);
 
             return steamAppEntity;
         }
