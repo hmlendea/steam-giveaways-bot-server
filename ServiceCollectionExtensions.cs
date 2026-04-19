@@ -38,7 +38,7 @@ namespace SteamGiveawaysBot.Server
             .AddSingleton<ILogger, NuciLogger>()
             .AddSingleton<IFileRepository<UserEntity>>(x => new XmlRepository<UserEntity>(x.GetRequiredService<DataStoreSettings>().UserStorePath))
             .AddSingleton<IFileRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(x.GetRequiredService<DataStoreSettings>().SteamAccountStorePath))
-            .AddSingleton<IFileRepository<RewardEntity>>(x => new JsonRepository<RewardEntity>(x.GetRequiredService<DataStoreSettings>().RewardsStorePath))
+            .AddSingleton<IFileRepository<RewardEntity>>(x => new JsonRepository<RewardEntity>(x.GetRequiredService<DataStoreSettings>().RewardStorePath))
             .AddSingleton<ISteamAccountService, SteamAccountService>()
             .AddSingleton<IRewardService, RewardService>()
             .AddSingleton<IUserService, UserService>();
