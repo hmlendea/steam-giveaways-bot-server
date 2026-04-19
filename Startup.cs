@@ -19,8 +19,9 @@ namespace SteamGiveawaysBot.Server
             services.AddControllers();
 
             services
-                .AddNuciApiReplayProtection()
                 .AddConfigurations(Configuration)
+                .AddNuciApiScannerProtection()
+                .AddNuciApiReplayProtection()
                 .AddCustomServices();
         }
 
@@ -34,6 +35,7 @@ namespace SteamGiveawaysBot.Server
 
             app.UseNuciApiRequestLogging();
             app.UseNuciApiExceptionHandling();
+            app.UseNuciApiScannerProtection();
 
             if (env.IsDevelopment())
             {
