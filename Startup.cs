@@ -28,7 +28,7 @@ namespace SteamGiveawaysBot.Server
         {
             // Ensure the stores exist
             var dataStoreSettings = app.ApplicationServices.GetRequiredService<DataStoreSettings>();
-            CreateStoreIfMissing(dataStoreSettings.RewardsStorePath, nameof(RewardEntity));
+            CreateStoreIfMissing(dataStoreSettings.RewardStorePath, nameof(RewardEntity));
             CreateStoreIfMissing(dataStoreSettings.UserStorePath, nameof(UserEntity));
             CreateStoreIfMissing(dataStoreSettings.SteamAccountStorePath, nameof(SteamAccountEntity));
 
