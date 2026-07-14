@@ -99,6 +99,31 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
                 () => steamAccountService.GetAccount(request));
         }
 
+        [Test]
+        public void GivenEmptyHmacToken_WhenGettingAccount_ThenDoesNotQuerySteamAccountRepository()
+        {
+            mockUserRepository
+                .Setup(repository => repository.Get(TestUsername))
+                .Returns(BuildUserEntityWithAssignedAccount(TestSteamAccountId));
+
+            GetSteamAccountRequest request = BuildGetAccountRequest(
+                TestSteamGiftsProvider,
+                string.Empty);
+
+            try
+            {
+                steamAccountService.GetAccount(request);
+            }
+            catch (AuthenticationException)
+            {
+                // Expected exception.
+            }
+
+            mockSteamAccountRepository.Verify(
+                repository => repository.Get(It.IsAny<string>()),
+                Times.Never);
+        }
+
         // ── GetAccount — no assigned account ─────────────────────────────────
 
         [Test]
@@ -242,6 +267,34 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             GetSteamAccountResponse response = steamAccountService.GetAccount(request);
 
             Assert.That(response.Username, Is.EqualTo(TestSteamAccountId));
+        }
+
+        [Test]
+        public void GivenUserWithValidAssignedAccount_WhenGettingAccountForOtherProvider_ThenReturnsExistingAccountPassword()
+        {
+            SetUpUserWithAssignedAccount(TestSteamAccountId);
+            SetUpSuspendedSteamAccount(TestSteamAccountId, TestSteamAccountPassword);
+
+            GetSteamAccountRequest request = BuildValidGetAccountRequest(TestOtherProvider);
+
+            GetSteamAccountResponse response = steamAccountService.GetAccount(request);
+
+            Assert.That(response.Password, Is.EqualTo(TestSteamAccountPassword));
+        }
+
+        [Test]
+        public void GivenUserWithValidAssignedAccount_WhenGettingAccountForOtherProvider_ThenDoesNotSaveUserChanges()
+        {
+            SetUpUserWithAssignedAccount(TestSteamAccountId);
+            SetUpSuspendedSteamAccount(TestSteamAccountId, TestSteamAccountPassword);
+
+            GetSteamAccountRequest request = BuildValidGetAccountRequest(TestOtherProvider);
+
+            steamAccountService.GetAccount(request);
+
+            mockUserRepository.Verify(
+                repository => repository.SaveChanges(),
+                Times.Never);
         }
 
         [Test]

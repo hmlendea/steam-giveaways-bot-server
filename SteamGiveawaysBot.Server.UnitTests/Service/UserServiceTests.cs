@@ -169,6 +169,54 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         }
 
         [Test]
+        public void GivenEmptyHmacToken_WhenSettingIpAddress_ThenDoesNotCallRepositoryUpdate()
+        {
+            SetIpAddressRequest request = new()
+            {
+                Username = TestUsername,
+                IpAddress = TestIpAddress,
+                HmacToken = string.Empty
+            };
+
+            try
+            {
+                userService.SetIpAddress(request);
+            }
+            catch (AuthenticationException)
+            {
+                // Expected exception.
+            }
+
+            mockUserRepository.Verify(
+                repository => repository.Update(It.IsAny<UserEntity>()),
+                Times.Never);
+        }
+
+        [Test]
+        public void GivenEmptyHmacToken_WhenSettingIpAddress_ThenDoesNotSaveRepositoryChanges()
+        {
+            SetIpAddressRequest request = new()
+            {
+                Username = TestUsername,
+                IpAddress = TestIpAddress,
+                HmacToken = string.Empty
+            };
+
+            try
+            {
+                userService.SetIpAddress(request);
+            }
+            catch (AuthenticationException)
+            {
+                // Expected exception.
+            }
+
+            mockUserRepository.Verify(
+                repository => repository.SaveChanges(),
+                Times.Never);
+        }
+
+        [Test]
         public void GivenHmacTokenForDifferentIpAddress_WhenSettingIpAddress_ThenThrowsAuthenticationException()
         {
             SetIpAddressRequest tokenRequest = new()

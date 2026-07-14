@@ -184,6 +184,56 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         }
 
         [Test]
+        public void GivenEmptyHmacToken_WhenRecordingReward_ThenThrowsAuthenticationException()
+        {
+            RecordRewardRequest request = BuildRecordRewardRequest(string.Empty);
+
+            Assert.Throws<AuthenticationException>(
+                () => rewardService.RecordReward(request));
+        }
+
+        [Test]
+        public void GivenEmptyHmacToken_WhenRecordingReward_ThenDoesNotAddRewardToRepository()
+        {
+            RecordRewardRequest request = BuildRecordRewardRequest(string.Empty);
+
+            try
+            {
+                rewardService.RecordReward(request);
+            }
+            catch (AuthenticationException)
+            {
+                // Expected exception.
+            }
+
+            mockRewardRepository.Verify(
+                repository => repository.Add(It.IsAny<RewardEntity>()),
+                Times.Never);
+        }
+
+        [Test]
+        public void GivenEmptyHmacToken_WhenRecordingReward_ThenDoesNotSendEmailNotification()
+        {
+            RecordRewardRequest request = BuildRecordRewardRequest(string.Empty);
+
+            try
+            {
+                rewardService.RecordReward(request);
+            }
+            catch (AuthenticationException)
+            {
+                // Expected exception.
+            }
+
+            mockNotificationsClient.Verify(
+                client => client.SendEmail(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()),
+                Times.Never);
+        }
+
+        [Test]
         public void GivenValidRequest_WhenRecordingReward_ThenAddsRewardToRepository()
         {
             RecordRewardRequest request = BuildValidRecordRewardRequest();
@@ -210,6 +260,20 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
                         entity.SteamUsername == TestSteamUsername &&
                         entity.ActivationKey == TestActivationKey &&
                         entity.SteamAppId == TestSteamAppId)),
+                Times.Once);
+        }
+
+        [Test]
+        public void GivenValidRequest_WhenRecordingReward_ThenAddsRewardWithCorrectId()
+        {
+            RecordRewardRequest request = BuildValidRecordRewardRequest();
+
+            rewardService.RecordReward(request);
+
+            mockRewardRepository.Verify(
+                repository => repository.Add(
+                    It.Is<RewardEntity>(entity =>
+                        entity.Id == $"{TestGiveawaysProvider}-{TestSteamUsername}-{TestGiveawayId}")),
                 Times.Once);
         }
 
@@ -325,6 +389,73 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             rewardService.RecordReward(request);
 
             Assert.That(capturedBody, Does.Contain(TestSteamUsername));
+        }
+
+        [Test]
+        public void GivenValidRequest_WhenRecordingReward_ThenEmailBodyContainsStoreUrl()
+        {
+            string capturedBody = null;
+
+            mockNotificationsClient
+                .Setup(client => client.SendEmail(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Callback<string, string, string>(
+                    (recipient, subject, body) => capturedBody = body);
+
+            RecordRewardRequest request = BuildValidRecordRewardRequest();
+
+            rewardService.RecordReward(request);
+
+            Assert.That(
+                capturedBody,
+                Does.Contain($"https://store.steampowered.com/app/{TestSteamAppId}"));
+        }
+
+        [Test]
+        public void GivenValidRequest_WhenRecordingReward_ThenEmailBodyContainsActivationLink()
+        {
+            string capturedBody = null;
+
+            mockNotificationsClient
+                .Setup(client => client.SendEmail(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Callback<string, string, string>(
+                    (recipient, subject, body) => capturedBody = body);
+
+            RecordRewardRequest request = BuildValidRecordRewardRequest();
+
+            rewardService.RecordReward(request);
+
+            Assert.That(
+                capturedBody,
+                Does.Contain(
+                    $"https://store.steampowered.com/account/registerkey?key={TestActivationKey}"));
+        }
+
+        [Test]
+        public void GivenValidRequest_WhenRecordingReward_ThenEmailBodyContainsGiveawayUrl()
+        {
+            string capturedBody = null;
+
+            mockNotificationsClient
+                .Setup(client => client.SendEmail(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Callback<string, string, string>(
+                    (recipient, subject, body) => capturedBody = body);
+
+            RecordRewardRequest request = BuildValidRecordRewardRequest();
+
+            rewardService.RecordReward(request);
+
+            Assert.That(
+                capturedBody,
+                Does.Contain($"https://steamgifts.com/giveaway/{TestGiveawayId}/ga/"));
         }
 
         [Test]

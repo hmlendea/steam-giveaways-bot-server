@@ -1,3 +1,5 @@
+using System;
+
 using NUnit.Framework;
 
 using SteamGiveawaysBot.Server.Service.Models;
@@ -7,6 +9,19 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service.Models
     [TestFixture]
     public class RewardTests
     {
+        // ── Constructor ───────────────────────────────────────────────────────
+
+        [Test]
+        public void GivenNewInstance_WhenCreated_ThenCreationTimeIsNearNow()
+        {
+            DateTimeOffset before = DateTimeOffset.Now;
+            Reward reward = new();
+            DateTimeOffset after = DateTimeOffset.Now;
+
+            Assert.That(reward.CreationTime, Is.GreaterThanOrEqualTo(before));
+            Assert.That(reward.CreationTime, Is.LessThanOrEqualTo(after));
+        }
+
         // ── GiveawayUrl ───────────────────────────────────────────────────────
 
         [TestCase("steamgifts")]
