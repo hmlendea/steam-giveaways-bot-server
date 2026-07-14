@@ -2,8 +2,11 @@ using System.Collections.Generic;
 using System.Security.Authentication;
 
 using Moq;
+
 using NuciDAL.Repositories;
+
 using NuciSecurity.HMAC;
+
 using NUnit.Framework;
 
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
@@ -16,8 +19,8 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
     [TestFixture]
     public class SteamAccountServiceTests
     {
-        Mock<IFileRepository<UserEntity>> mockUserRepository;
-        Mock<IFileRepository<SteamAccountEntity>> mockSteamAccountRepository;
+        Mock<IFileRepository<UserDataObject>> mockUserRepository;
+        Mock<IFileRepository<SteamAccountDataObject>> mockSteamAccountRepository;
         SteamAccountService steamAccountService;
 
         private static string TestUsername => "IlarionPintilie";
@@ -34,8 +37,8 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         [SetUp]
         public void SetUp()
         {
-            mockUserRepository = new Mock<IFileRepository<UserEntity>>();
-            mockSteamAccountRepository = new Mock<IFileRepository<SteamAccountEntity>>();
+            mockUserRepository = new Mock<IFileRepository<UserDataObject>>();
+            mockSteamAccountRepository = new Mock<IFileRepository<SteamAccountDataObject>>();
 
             steamAccountService = new SteamAccountService(
                 mockUserRepository.Object,
@@ -49,7 +52,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(BuildUserEntityWithAssignedAccount(TestSteamAccountId));
+                .Returns(BuildUserDataObjectWithAssignedAccount(TestSteamAccountId));
 
             GetSteamAccountRequest request = BuildGetAccountRequest(
                 TestSteamGiftsProvider,
@@ -64,7 +67,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(BuildUserEntityWithAssignedAccount(TestSteamAccountId));
+                .Returns(BuildUserDataObjectWithAssignedAccount(TestSteamAccountId));
 
             GetSteamAccountRequest request = BuildGetAccountRequest(
                 TestSteamGiftsProvider,
@@ -89,7 +92,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(BuildUserEntityWithAssignedAccount(TestSteamAccountId));
+                .Returns(BuildUserDataObjectWithAssignedAccount(TestSteamAccountId));
 
             GetSteamAccountRequest request = BuildGetAccountRequest(
                 TestSteamGiftsProvider,
@@ -104,7 +107,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(BuildUserEntityWithAssignedAccount(TestSteamAccountId));
+                .Returns(BuildUserDataObjectWithAssignedAccount(TestSteamAccountId));
 
             GetSteamAccountRequest request = BuildGetAccountRequest(
                 TestSteamGiftsProvider,
@@ -164,7 +167,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockUserRepository.Verify(
                 repository => repository.Update(
-                    It.Is<UserEntity>(entity =>
+                    It.Is<UserDataObject>(entity =>
                         entity.AssignedSteamAccount == TestSteamAccountId)),
                 Times.Once);
         }
@@ -237,7 +240,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             steamAccountService.GetAccount(request);
 
             mockUserRepository.Verify(
-                repository => repository.Update(It.IsAny<UserEntity>()),
+                repository => repository.Update(It.IsAny<UserDataObject>()),
                 Times.Never);
         }
 
@@ -308,7 +311,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             steamAccountService.GetAccount(request);
 
             mockUserRepository.Verify(
-                repository => repository.Update(It.IsAny<UserEntity>()),
+                repository => repository.Update(It.IsAny<UserDataObject>()),
                 Times.Never);
         }
 
@@ -352,7 +355,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockUserRepository.Verify(
                 repository => repository.Update(
-                    It.Is<UserEntity>(entity =>
+                    It.Is<UserDataObject>(entity =>
                         entity.AssignedSteamAccount == TestFreeAccountId)),
                 Times.Once);
         }
@@ -396,7 +399,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             steamAccountService.GetAccount(request);
 
             mockUserRepository.Verify(
-                repository => repository.Update(It.IsAny<UserEntity>()),
+                repository => repository.Update(It.IsAny<UserDataObject>()),
                 Times.Never);
         }
 
@@ -416,73 +419,73 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
         // ── Setup helpers ─────────────────────────────────────────────────────
 
-        void SetUpUserWithNoAssignedAccount()
+        private void SetUpUserWithNoAssignedAccount()
         {
-            UserEntity userEntity = BuildUserEntityWithAssignedAccount(null);
+            UserDataObject userDataObject = BuildUserDataObjectWithAssignedAccount(null);
 
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(userEntity);
+                .Returns(userDataObject);
 
             mockUserRepository
                 .Setup(repository => repository.GetAll())
-                .Returns([userEntity]);
+                .Returns([userDataObject]);
         }
 
-        void SetUpUserWithAssignedAccount(string assignedSteamAccountId)
+        private void SetUpUserWithAssignedAccount(string assignedSteamAccountId)
         {
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(BuildUserEntityWithAssignedAccount(assignedSteamAccountId));
+                .Returns(BuildUserDataObjectWithAssignedAccount(assignedSteamAccountId));
         }
 
-        void SetUpNonSuspendedSteamAccount(string accountId, string password)
+        private void SetUpNonSuspendedSteamAccount(string accountId, string password)
         {
             mockSteamAccountRepository
                 .Setup(repository => repository.Get(accountId))
-                .Returns(BuildSteamAccountEntity(accountId, password, isSuspended: false));
+                .Returns(BuildSteamAccountDataObject(accountId, password, isSuspended: false));
         }
 
-        void SetUpSuspendedSteamAccount(string accountId, string password)
+        private void SetUpSuspendedSteamAccount(string accountId, string password)
         {
             mockSteamAccountRepository
                 .Setup(repository => repository.Get(accountId))
-                .Returns(BuildSteamAccountEntity(accountId, password, isSuspended: true));
+                .Returns(BuildSteamAccountDataObject(accountId, password, isSuspended: true));
         }
 
-        void SetUpSingleAvailableAccount(
+        private void SetUpSingleAvailableAccount(
             string accountId,
             string password,
             bool isSuspended)
         {
-            SteamAccountEntity accountEntity = BuildSteamAccountEntity(accountId, password, isSuspended);
+            SteamAccountDataObject accountDataObject = BuildSteamAccountDataObject(accountId, password, isSuspended);
 
             mockSteamAccountRepository
                 .Setup(repository => repository.GetAll())
-                .Returns([accountEntity]);
+                .Returns([accountDataObject]);
         }
 
-        void SetUpSuspendedAndFreeAccounts()
+        private void SetUpSuspendedAndFreeAccounts()
         {
-            SteamAccountEntity suspendedAccountEntity = BuildSteamAccountEntity(
+            SteamAccountDataObject suspendedAccountDataObject = BuildSteamAccountDataObject(
                 TestSuspendedAccountId,
                 TestSteamAccountPassword,
                 isSuspended: true);
 
-            SteamAccountEntity freeAccountEntity = BuildSteamAccountEntity(
+            SteamAccountDataObject freeAccountDataObject = BuildSteamAccountDataObject(
                 TestFreeAccountId,
                 TestFreeAccountPassword,
                 isSuspended: false);
 
             mockSteamAccountRepository
                 .Setup(repository => repository.Get(TestSuspendedAccountId))
-                .Returns(suspendedAccountEntity);
+                .Returns(suspendedAccountDataObject);
 
             mockSteamAccountRepository
                 .Setup(repository => repository.GetAll())
-                .Returns([suspendedAccountEntity, freeAccountEntity]);
+                .Returns([suspendedAccountDataObject, freeAccountDataObject]);
 
-            UserEntity userWithSuspendedAccount = BuildUserEntityWithAssignedAccount(
+            UserDataObject userWithSuspendedAccount = BuildUserDataObjectWithAssignedAccount(
                 TestSuspendedAccountId);
 
             mockUserRepository
@@ -492,7 +495,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
         // ── Build helpers ─────────────────────────────────────────────────────
 
-        GetSteamAccountRequest BuildValidGetAccountRequest(string giveawaysProvider)
+        private static GetSteamAccountRequest BuildValidGetAccountRequest(string giveawaysProvider)
         {
             GetSteamAccountRequest request = new()
             {
@@ -505,7 +508,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             return request;
         }
 
-        static GetSteamAccountRequest BuildGetAccountRequest(
+        private static GetSteamAccountRequest BuildGetAccountRequest(
             string giveawaysProvider,
             string hmacToken) => new()
         {
@@ -514,7 +517,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             HmacToken = hmacToken
         };
 
-        static UserEntity BuildUserEntityWithAssignedAccount(string assignedSteamAccount) => new()
+        private static UserDataObject BuildUserDataObjectWithAssignedAccount(string assignedSteamAccount) => new()
         {
             Id = TestUsername,
             Username = TestUsername,
@@ -525,7 +528,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             LastUpdateTimestamp = TestTimestamp
         };
 
-        static SteamAccountEntity BuildSteamAccountEntity(
+        private static SteamAccountDataObject BuildSteamAccountDataObject(
             string accountId,
             string password,
             bool isSuspended) => new()

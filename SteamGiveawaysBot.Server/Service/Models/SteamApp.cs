@@ -1,5 +1,3 @@
-using System.Xml.Serialization;
-
 namespace SteamGiveawaysBot.Server.Service.Models
 {
     public sealed class SteamApp
@@ -8,7 +6,6 @@ namespace SteamGiveawaysBot.Server.Service.Models
 
         public string Name { get; set; }
 
-        [XmlIgnore]
         public string StoreUrl => $"https://store.steampowered.com/app/{Id}";
     }
 }

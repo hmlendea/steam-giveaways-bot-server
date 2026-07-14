@@ -1,20 +1,26 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using NuciDAL.Repositories;
+
 using NuciLog;
 using NuciLog.Core;
-using SteamGiveawaysBot.Server.Configuration;
-using SteamGiveawaysBot.Server.Client;
-using SteamGiveawaysBot.Server.DataAccess.DataObjects;
-using SteamGiveawaysBot.Server.Service;
+
 using NuciNotifications.Client;
 using NuciNotifications.Client.Configuration;
+
+using SteamGiveawaysBot.Server.Client;
+using SteamGiveawaysBot.Server.Configuration;
+using SteamGiveawaysBot.Server.DataAccess.DataObjects;
+using SteamGiveawaysBot.Server.Service;
 
 namespace SteamGiveawaysBot.Server
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddConfigurations(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             DataStoreSettings dataStoreSettings = new();
             NotificationSettings notificationSettings = new();
@@ -34,11 +40,21 @@ namespace SteamGiveawaysBot.Server
 
         public static IServiceCollection AddCustomServices(this IServiceCollection services) => services
             .AddSingleton<IStorefrontDataRetriever, StorefrontDataRetriever>()
-            .AddSingleton<INuciNotificationsClient>(x => new NuciNotificationsClient(x.GetRequiredService<NuciNotificationsSettings>()))
+            .AddSingleton<INuciNotificationsClient>(
+                serviceProvider => new NuciNotificationsClient(
+                    serviceProvider.GetRequiredService<NuciNotificationsSettings>()))
             .AddSingleton<ILogger, NuciLogger>()
-            .AddSingleton<IFileRepository<UserEntity>>(x => new XmlRepository<UserEntity>(x.GetRequiredService<DataStoreSettings>().UserStorePath))
-            .AddSingleton<IFileRepository<SteamAccountEntity>>(x => new XmlRepository<SteamAccountEntity>(x.GetRequiredService<DataStoreSettings>().SteamAccountStorePath))
-            .AddSingleton<IFileRepository<RewardEntity>>(x => new JsonRepository<RewardEntity>(x.GetRequiredService<DataStoreSettings>().RewardStorePath))
+            .AddSingleton<IFileRepository<UserDataObject>>(
+                serviceProvider => new XmlRepository<UserDataObject>(
+                    serviceProvider.GetRequiredService<DataStoreSettings>().UserStorePath))
+            .AddSingleton<IFileRepository<SteamAccountDataObject>>(
+                serviceProvider => new XmlRepository<SteamAccountDataObject>(
+                    serviceProvider
+                        .GetRequiredService<DataStoreSettings>()
+                        .SteamAccountStorePath))
+            .AddSingleton<IFileRepository<RewardDataObject>>(
+                serviceProvider => new JsonRepository<RewardDataObject>(
+                    serviceProvider.GetRequiredService<DataStoreSettings>().RewardStorePath))
             .AddSingleton<ISteamAccountService, SteamAccountService>()
             .AddSingleton<IRewardService, RewardService>()
             .AddSingleton<IUserService, UserService>();

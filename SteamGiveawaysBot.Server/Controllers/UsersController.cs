@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+
 using NuciAPI.Controllers;
+
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service;
@@ -12,10 +14,8 @@ namespace SteamGiveawaysBot.Server.Controllers
         IUserService service,
         SecuritySettings securitySettings) : NuciApiController
     {
-        readonly NuciApiAuthorisation authorisation = NuciApiAuthorisation.ApiKey(securitySettings.ApiKey);
-
         [HttpPost("ip/{username}")]
-        public ActionResult RecordReward(
+        public ActionResult SetIpAddress(
             [FromBody] SetIpAddressRequest request,
             string username)
             => ProcessRequest(
@@ -25,6 +25,6 @@ namespace SteamGiveawaysBot.Server.Controllers
                     request.Username = username;
                     service.SetIpAddress(request);
                 },
-                authorisation);
+                NuciApiAuthorisation.ApiKey(securitySettings.ApiKey));
     }
 }

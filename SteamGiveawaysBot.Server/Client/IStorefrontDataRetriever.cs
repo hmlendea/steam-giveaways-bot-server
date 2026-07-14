@@ -4,6 +4,6 @@ namespace SteamGiveawaysBot.Server.Client
 {
     public interface IStorefrontDataRetriever
     {
-        SteamAppEntity GetAppData(string appId);
+        SteamAppDataObject GetAppData(string appId);
     }
 }

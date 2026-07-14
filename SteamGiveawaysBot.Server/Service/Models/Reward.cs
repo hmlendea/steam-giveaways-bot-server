@@ -5,21 +5,27 @@ namespace SteamGiveawaysBot.Server.Service.Models
 {
     public sealed class Reward
     {
-        const string SteamKeyRegexPattern = "^([A-Z0-9]{5}-)*[A-Z0-9]{5}$";
-
-        const string SteamActivationUrlFormat = "https://store.steampowered.com/account/registerkey?key={0}";
-
         public string Id { get; set; }
 
         public string GiveawaysProvider { get; set; }
 
         public string GiveawayId { get; set; }
 
-        public string GiveawayUrl => GiveawaysProvider.ToLowerInvariant() switch
+        public string GiveawayUrl
         {
-            "steamgifts" => $"https://steamgifts.com/giveaway/{GiveawayId}/ga/",
-            _ => $"[UNKNOWN] Provider={GiveawaysProvider}, Id={GiveawayId}",
-        };
+            get
+            {
+                if (string.Equals(
+                    GiveawaysProvider,
+                    SteamGiftsProviderName,
+                    StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return $"{SteamGiftsGiveawayUrlBase}{GiveawayId}/ga/";
+                }
+
+                return $"[UNKNOWN] Provider={GiveawaysProvider}, Id={GiveawayId}";
+            }
+        }
 
         public string SteamUsername { get; set; }
 
@@ -35,20 +41,33 @@ namespace SteamGiveawaysBot.Server.Service.Models
             {
                 if (IsKeySteamCode)
                 {
-                    return string.Format(SteamActivationUrlFormat, ActivationKey);
+                    return $"{SteamActivationUrlBase}{ActivationKey}";
                 }
 
-                if (ActivationKey.Contains("http"))
+                if (ActivationKey.Contains(HttpSchemePrefix))
                 {
                     return ActivationKey;
                 }
 
-                return "UNKNOWN";
+                return UnknownActivationLink;
             }
         }
 
         public DateTimeOffset CreationTime { get; set; }
 
         public Reward() => CreationTime = DateTimeOffset.Now;
+
+        private static string SteamKeyRegexPattern => "^([A-Z0-9]{5}-)*[A-Z0-9]{5}$";
+
+        private static string SteamActivationUrlBase
+            => "https://store.steampowered.com/account/registerkey?key=";
+
+        private static string SteamGiftsProviderName => "SteamGifts";
+
+        private static string SteamGiftsGiveawayUrlBase => "https://steamgifts.com/giveaway/";
+
+        private static string HttpSchemePrefix => "http";
+
+        private static string UnknownActivationLink => "UNKNOWN";
     }
 }

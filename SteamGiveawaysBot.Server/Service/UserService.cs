@@ -2,7 +2,9 @@ using System;
 using System.Security.Authentication;
 
 using NuciDAL.Repositories;
+
 using NuciSecurity.HMAC;
+
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service.Mapping;
@@ -10,11 +12,11 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Service
 {
-    public sealed class UserService(IFileRepository<UserEntity> userRepository) : IUserService
+    public sealed class UserService(IFileRepository<UserDataObject> userRepository) : IUserService
     {
         public void SetIpAddress(SetIpAddressRequest request)
         {
-            User user = userRepository.Get(request.Username).ToServiceModel();
+            User user = userRepository.Get(request.Username).ToDomainModel();
 
             ValidateRequest(request, user);
 
@@ -25,7 +27,7 @@ namespace SteamGiveawaysBot.Server.Service
             userRepository.SaveChanges();
         }
 
-        static void ValidateRequest(SetIpAddressRequest request, User user)
+        private static void ValidateRequest(SetIpAddressRequest request, User user)
         {
             if (!HmacValidator.IsTokenValid(request.HmacToken, request, user.SharedSecretKey))
             {
