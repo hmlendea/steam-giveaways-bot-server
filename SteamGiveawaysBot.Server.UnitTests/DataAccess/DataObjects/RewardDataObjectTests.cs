@@ -5,14 +5,14 @@ using SteamGiveawaysBot.Server.DataAccess.DataObjects;
 namespace SteamGiveawaysBot.Server.UnitTests.DataAccess.DataObjects
 {
     [TestFixture]
-    public class RewardEntityTests
+    public class RewardDataObjectTests
     {
         // ── SteamAppUrl ───────────────────────────────────────────────────────
 
         [Test]
         public void GivenNumericSteamAppId_WhenGettingSteamAppUrl_ThenReturnsCorrectSteamStoreUrl()
         {
-            RewardEntity entity = new() { SteamAppId = "873" };
+            RewardDataObject entity = new() { SteamAppId = "873" };
 
             Assert.That(
                 entity.SteamAppUrl,
@@ -22,7 +22,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.DataAccess.DataObjects
         [Test]
         public void GivenAnotherSteamAppId_WhenGettingSteamAppUrl_ThenReturnsCorrectSteamStoreUrl()
         {
-            RewardEntity entity = new() { SteamAppId = "613" };
+            RewardDataObject entity = new() { SteamAppId = "613" };
 
             Assert.That(
                 entity.SteamAppUrl,
@@ -32,7 +32,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.DataAccess.DataObjects
         [Test]
         public void GivenSteamAppId_WhenGettingSteamAppUrl_ThenUrlStartsWithSteamStoreBase()
         {
-            RewardEntity entity = new() { SteamAppId = "12345" };
+            RewardDataObject entity = new() { SteamAppId = "12345" };
 
             Assert.That(
                 entity.SteamAppUrl,
@@ -42,7 +42,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.DataAccess.DataObjects
         [Test]
         public void GivenSteamAppId_WhenGettingSteamAppUrl_ThenUrlContainsAppId()
         {
-            RewardEntity entity = new() { SteamAppId = "730" };
+            RewardDataObject entity = new() { SteamAppId = "730" };
 
             Assert.That(entity.SteamAppUrl, Does.Contain("730"));
         }
@@ -50,8 +50,8 @@ namespace SteamGiveawaysBot.Server.UnitTests.DataAccess.DataObjects
         [Test]
         public void GivenTwoDifferentSteamAppIds_WhenGettingSteamAppUrls_ThenUrlsAreDifferent()
         {
-            RewardEntity firstEntity = new() { SteamAppId = "873" };
-            RewardEntity secondEntity = new() { SteamAppId = "613" };
+            RewardDataObject firstEntity = new() { SteamAppId = "873" };
+            RewardDataObject secondEntity = new() { SteamAppId = "613" };
 
             Assert.That(firstEntity.SteamAppUrl, Is.Not.EqualTo(secondEntity.SteamAppUrl));
         }

@@ -1,10 +1,15 @@
 using System.Security.Authentication;
 
 using Moq;
+
 using NuciDAL.Repositories;
+
 using NuciLog.Core;
+
 using NuciNotifications.Client;
+
 using NuciSecurity.HMAC;
+
 using NUnit.Framework;
 
 using SteamGiveawaysBot.Server.Client;
@@ -20,8 +25,8 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
     public class RewardServiceTests
     {
         Mock<INuciNotificationsClient> mockNotificationsClient;
-        Mock<IFileRepository<UserEntity>> mockUserRepository;
-        Mock<IFileRepository<RewardEntity>> mockRewardRepository;
+        Mock<IFileRepository<UserDataObject>> mockUserRepository;
+        Mock<IFileRepository<RewardDataObject>> mockRewardRepository;
         Mock<IStorefrontDataRetriever> mockStorefrontDataRetriever;
         Mock<ILogger> mockLogger;
         NotificationSettings notificationSettings;
@@ -42,8 +47,8 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         public void SetUp()
         {
             mockNotificationsClient = new Mock<INuciNotificationsClient>();
-            mockUserRepository = new Mock<IFileRepository<UserEntity>>();
-            mockRewardRepository = new Mock<IFileRepository<RewardEntity>>();
+            mockUserRepository = new Mock<IFileRepository<UserDataObject>>();
+            mockRewardRepository = new Mock<IFileRepository<RewardDataObject>>();
             mockStorefrontDataRetriever = new Mock<IStorefrontDataRetriever>();
             mockLogger = new Mock<ILogger>();
 
@@ -54,11 +59,11 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockUserRepository
                 .Setup(repository => repository.TryGet(TestUsername))
-                .Returns(BuildUserEntity());
+                .Returns(BuildUserDataObject());
 
             mockStorefrontDataRetriever
                 .Setup(retriever => retriever.GetAppData(TestSteamAppId))
-                .Returns(BuildSteamAppEntity());
+                .Returns(BuildSteamAppDataObject());
 
             rewardService = new RewardService(
                 mockNotificationsClient.Object,
@@ -76,7 +81,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.TryGet(TestUsername))
-                .Returns((UserEntity)null);
+                .Returns((UserDataObject)null);
 
             RecordRewardRequest request = BuildRecordRewardRequest("any-invalid-token");
 
@@ -89,7 +94,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.TryGet(TestUsername))
-                .Returns((UserEntity)null);
+                .Returns((UserDataObject)null);
 
             RecordRewardRequest request = BuildRecordRewardRequest("any-invalid-token");
 
@@ -103,7 +108,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             }
 
             mockRewardRepository.Verify(
-                repository => repository.Add(It.IsAny<RewardEntity>()),
+                repository => repository.Add(It.IsAny<RewardDataObject>()),
                 Times.Never);
         }
 
@@ -112,7 +117,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         {
             mockUserRepository
                 .Setup(repository => repository.TryGet(TestUsername))
-                .Returns((UserEntity)null);
+                .Returns((UserDataObject)null);
 
             RecordRewardRequest request = BuildRecordRewardRequest("any-invalid-token");
 
@@ -157,7 +162,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             }
 
             mockRewardRepository.Verify(
-                repository => repository.Add(It.IsAny<RewardEntity>()),
+                repository => repository.Add(It.IsAny<RewardDataObject>()),
                 Times.Never);
         }
 
@@ -207,7 +212,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             }
 
             mockRewardRepository.Verify(
-                repository => repository.Add(It.IsAny<RewardEntity>()),
+                repository => repository.Add(It.IsAny<RewardDataObject>()),
                 Times.Never);
         }
 
@@ -241,7 +246,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             rewardService.RecordReward(request);
 
             mockRewardRepository.Verify(
-                repository => repository.Add(It.IsAny<RewardEntity>()),
+                repository => repository.Add(It.IsAny<RewardDataObject>()),
                 Times.Once);
         }
 
@@ -254,7 +259,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockRewardRepository.Verify(
                 repository => repository.Add(
-                    It.Is<RewardEntity>(entity =>
+                    It.Is<RewardDataObject>(entity =>
                         entity.GiveawaysProvider == TestGiveawaysProvider &&
                         entity.GiveawayId == TestGiveawayId &&
                         entity.SteamUsername == TestSteamUsername &&
@@ -272,7 +277,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockRewardRepository.Verify(
                 repository => repository.Add(
-                    It.Is<RewardEntity>(entity =>
+                    It.Is<RewardDataObject>(entity =>
                         entity.Id == $"{TestGiveawaysProvider}-{TestSteamUsername}-{TestGiveawayId}")),
                 Times.Once);
         }
@@ -480,7 +485,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
         // ── Helpers ───────────────────────────────────────────────────────────
 
-        static RecordRewardRequest BuildValidRecordRewardRequest()
+        private static RecordRewardRequest BuildValidRecordRewardRequest()
         {
             RecordRewardRequest request = new()
             {
@@ -497,7 +502,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             return request;
         }
 
-        static RecordRewardRequest BuildRecordRewardRequest(string hmacToken) => new()
+        private static RecordRewardRequest BuildRecordRewardRequest(string hmacToken) => new()
         {
             Username = TestUsername,
             GiveawaysProvider = TestGiveawaysProvider,
@@ -508,7 +513,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             HmacToken = hmacToken
         };
 
-        static UserEntity BuildUserEntity() => new()
+        private static UserDataObject BuildUserDataObject() => new()
         {
             Id = TestUsername,
             Username = TestUsername,
@@ -519,7 +524,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             LastUpdateTimestamp = TestTimestamp
         };
 
-        static SteamAppEntity BuildSteamAppEntity() => new()
+        private static SteamAppDataObject BuildSteamAppDataObject() => new()
         {
             Id = TestSteamAppId,
             Name = TestSteamAppName

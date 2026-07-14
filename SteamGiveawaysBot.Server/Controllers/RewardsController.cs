@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+
 using NuciAPI.Controllers;
+
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.Requests;
 using SteamGiveawaysBot.Server.Service;
@@ -12,8 +14,6 @@ namespace SteamGiveawaysBot.Server.Controllers
         IRewardService service,
         SecuritySettings securitySettings) : NuciApiController
     {
-        readonly NuciApiAuthorisation authorisation = NuciApiAuthorisation.ApiKey(securitySettings.ApiKey);
-
         [HttpGet]
         public ActionResult GetAccount() => Ok();
 
@@ -22,6 +22,6 @@ namespace SteamGiveawaysBot.Server.Controllers
             => ProcessRequest(
                 request,
                 () => service.RecordReward(request),
-                authorisation);
+                NuciApiAuthorisation.ApiKey(securitySettings.ApiKey));
     }
 }

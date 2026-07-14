@@ -1,6 +1,6 @@
 namespace SteamGiveawaysBot.Server.Client.Models
 {
-    public sealed class SteamAppEntity
+    public sealed class SteamAppDataObject
     {
         public string Id { get; set; }
 

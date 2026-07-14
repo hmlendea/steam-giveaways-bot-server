@@ -11,17 +11,10 @@ namespace SteamGiveawaysBot.Server.Client
 {
     public sealed class StorefrontDataRetriever(ILogger logger) : IStorefrontDataRetriever
     {
-        const string StorefrontApiUrl = "http://store.steampowered.com/api";
-        const string StorefrontApiCountry = "RO";
-        const string StorefrontApiFilters = "basic";
+        private readonly HttpClient httpClient = new();
 
-        readonly HttpClient httpClient = new();
-        readonly ILogger logger = logger;
-
-        public SteamAppEntity GetAppData(string appId)
+        public SteamAppDataObject GetAppData(string appId)
         {
-            const string namePattern = "\"name\": *\"([^\"]*)\"";
-
             IEnumerable<LogInfo> logInfos =
             [
                 new(MyLogInfoKey.AppId, appId)
@@ -32,13 +25,17 @@ namespace SteamGiveawaysBot.Server.Client
                 OperationStatus.Started,
                 logInfos);
 
-            string endpoint = $"{StorefrontApiUrl}/appdetails?appids={appId}&cc={StorefrontApiCountry}&filters={StorefrontApiFilters}";
+            string endpoint = $"{StorefrontApiUrl}/appdetails"
+                + $"?appids={appId}"
+                + $"&cc={StorefrontApiCountry}"
+                + $"&filters={StorefrontApiFilters}";
+
             string responseContent = httpClient.GetStringAsync(endpoint).GetAwaiter().GetResult();
 
-            SteamAppEntity steamAppEntity = new()
+            SteamAppDataObject steamAppData = new()
             {
                 Id = appId,
-                Name = Regex.Match(responseContent, namePattern).Groups[1].Value
+                Name = Regex.Match(responseContent, AppNamePattern).Groups[1].Value
             };
 
             logger.Debug(
@@ -46,7 +43,15 @@ namespace SteamGiveawaysBot.Server.Client
                 OperationStatus.Success,
                 logInfos);
 
-            return steamAppEntity;
+            return steamAppData;
         }
+
+        private static string StorefrontApiUrl => "http://store.steampowered.com/api";
+
+        private static string StorefrontApiCountry => "RO";
+
+        private static string StorefrontApiFilters => "basic";
+
+        private static string AppNamePattern => "\"name\": *\"([^\"]*)\"";
     }
 }

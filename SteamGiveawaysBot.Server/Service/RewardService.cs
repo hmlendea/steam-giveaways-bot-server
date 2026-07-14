@@ -1,9 +1,14 @@
 using System;
 using System.Security.Authentication;
+
 using NuciDAL.Repositories;
+
 using NuciLog.Core;
+
 using NuciNotifications.Client;
+
 using NuciSecurity.HMAC;
+
 using SteamGiveawaysBot.Server.Client;
 using SteamGiveawaysBot.Server.Configuration;
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
@@ -14,14 +19,16 @@ using SteamGiveawaysBot.Server.Service.Models;
 
 namespace SteamGiveawaysBot.Server.Service
 {
-    public class RewardService(
+    public sealed class RewardService(
         INuciNotificationsClient notificationsClient,
-        IFileRepository<UserEntity> userRepository,
-        IFileRepository<RewardEntity> rewardRepository,
+        IFileRepository<UserDataObject> userRepository,
+        IFileRepository<RewardDataObject> rewardRepository,
         IStorefrontDataRetriever storefrontDataRetriever,
         NotificationSettings notificationSettings,
         ILogger logger) : IRewardService
     {
+        private static string EmailSubject => "Steam Key won!";
+
         public void RecordReward(RecordRewardRequest request)
         {
             logger.Info(
@@ -33,15 +40,15 @@ namespace SteamGiveawaysBot.Server.Service
 
             ValidateRequest(request);
 
-            Reward reward = GetRewardObjectFromRequest(request);
-            reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToServiceModel();
+            Reward reward = GetRewardFromRequest(request);
+            reward.SteamApp = storefrontDataRetriever.GetAppData(reward.SteamApp.Id).ToDomainModel();
 
             rewardRepository.Add(reward.ToDataObject());
             rewardRepository.SaveChanges();
 
             notificationsClient.SendEmail(
                 notificationSettings.EmailAddress,
-                "Steam Key won!",
+                EmailSubject,
                 $"Game: {reward.SteamApp.Name} ({reward.SteamApp.StoreUrl})" + Environment.NewLine +
                 $"Key: {reward.ActivationKey} ({reward.ActivationLink})" + Environment.NewLine +
                 $"Username: {reward.SteamUsername}" + Environment.NewLine +
@@ -55,9 +62,9 @@ namespace SteamGiveawaysBot.Server.Service
                 new LogInfo(MyLogInfoKey.GiveawayId, request.GiveawayId));
         }
 
-        void ValidateRequest(RecordRewardRequest request)
+        private void ValidateRequest(RecordRewardRequest request)
         {
-            User user = userRepository.TryGet(request.Username)?.ToServiceModel();
+            User user = userRepository.TryGet(request.Username)?.ToDomainModel();
 
             if (user is null)
             {
@@ -72,7 +79,10 @@ namespace SteamGiveawaysBot.Server.Service
                 throw ex;
             }
 
-            bool isTokenValid = HmacValidator.IsTokenValid(request.HmacToken, request, user.SharedSecretKey);
+            bool isTokenValid = HmacValidator.IsTokenValid(
+                request.HmacToken,
+                request,
+                user.SharedSecretKey);
 
             if (!isTokenValid)
             {
@@ -90,14 +100,14 @@ namespace SteamGiveawaysBot.Server.Service
             }
         }
 
-        static Reward GetRewardObjectFromRequest(RecordRewardRequest request) => new()
+        private static Reward GetRewardFromRequest(RecordRewardRequest request) => new()
         {
             Id = $"{request.GiveawaysProvider}-{request.SteamUsername}-{request.GiveawayId}",
             GiveawaysProvider = request.GiveawaysProvider,
             GiveawayId = request.GiveawayId,
             SteamUsername = request.SteamUsername,
             ActivationKey = request.ActivationKey,
-            SteamApp = new SteamApp
+            SteamApp = new()
             {
                 Id = request.SteamAppId
             }

@@ -3,8 +3,11 @@ using System.Globalization;
 using System.Security.Authentication;
 
 using Moq;
+
 using NuciDAL.Repositories;
+
 using NuciSecurity.HMAC;
+
 using NUnit.Framework;
 
 using SteamGiveawaysBot.Server.DataAccess.DataObjects;
@@ -16,7 +19,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
     [TestFixture]
     public class UserServiceTests
     {
-        Mock<IFileRepository<UserEntity>> mockUserRepository;
+        Mock<IFileRepository<UserDataObject>> mockUserRepository;
         UserService userService;
 
         private static string TestUsername => "IlarionPintilie";
@@ -28,10 +31,10 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
         [SetUp]
         public void SetUp()
         {
-            mockUserRepository = new Mock<IFileRepository<UserEntity>>();
+            mockUserRepository = new Mock<IFileRepository<UserDataObject>>();
             mockUserRepository
                 .Setup(repository => repository.Get(TestUsername))
-                .Returns(BuildUserEntity());
+                .Returns(BuildUserDataObject());
 
             userService = new UserService(mockUserRepository.Object);
         }
@@ -46,7 +49,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             userService.SetIpAddress(request);
 
             mockUserRepository.Verify(
-                repository => repository.Update(It.IsAny<UserEntity>()),
+                repository => repository.Update(It.IsAny<UserDataObject>()),
                 Times.Once);
         }
 
@@ -71,7 +74,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockUserRepository.Verify(
                 repository => repository.Update(
-                    It.Is<UserEntity>(entity => entity.IpAddress == TestIpAddress)),
+                    It.Is<UserDataObject>(entity => entity.IpAddress == TestIpAddress)),
                 Times.Once);
         }
 
@@ -87,7 +90,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockUserRepository.Verify(
                 repository => repository.Update(
-                    It.Is<UserEntity>(entity => IsTimestampWithinRange(
+                    It.Is<UserDataObject>(entity => IsTimestampWithinRange(
                         entity.LastUpdateTimestamp,
                         before,
                         after))),
@@ -103,7 +106,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
             mockUserRepository.Verify(
                 repository => repository.Update(
-                    It.Is<UserEntity>(entity => entity.Username == TestUsername)),
+                    It.Is<UserDataObject>(entity => entity.Username == TestUsername)),
                 Times.Once);
         }
 
@@ -131,7 +134,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             }
 
             mockUserRepository.Verify(
-                repository => repository.Update(It.IsAny<UserEntity>()),
+                repository => repository.Update(It.IsAny<UserDataObject>()),
                 Times.Never);
         }
 
@@ -188,7 +191,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             }
 
             mockUserRepository.Verify(
-                repository => repository.Update(It.IsAny<UserEntity>()),
+                repository => repository.Update(It.IsAny<UserDataObject>()),
                 Times.Never);
         }
 
@@ -240,7 +243,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
 
         // ── Helpers ───────────────────────────────────────────────────────────
 
-        static bool IsTimestampWithinRange(
+        private static bool IsTimestampWithinRange(
             string timestamp,
             DateTimeOffset rangeStart,
             DateTimeOffset rangeEnd)
@@ -252,7 +255,7 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             return parsed >= rangeStart && parsed <= rangeEnd;
         }
 
-        static SetIpAddressRequest BuildValidSetIpAddressRequest()
+        private static SetIpAddressRequest BuildValidSetIpAddressRequest()
         {
             SetIpAddressRequest request = new()
             {
@@ -265,14 +268,14 @@ namespace SteamGiveawaysBot.Server.UnitTests.Service
             return request;
         }
 
-        static SetIpAddressRequest BuildInvalidSetIpAddressRequest() => new()
+        private static SetIpAddressRequest BuildInvalidSetIpAddressRequest() => new()
         {
             Username = TestUsername,
             IpAddress = TestIpAddress,
             HmacToken = "completely-invalid-hmac-token"
         };
 
-        static UserEntity BuildUserEntity() => new()
+        private static UserDataObject BuildUserDataObject() => new()
         {
             Id = TestUsername,
             Username = TestUsername,
